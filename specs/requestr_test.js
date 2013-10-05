@@ -84,6 +84,13 @@ describe('Requestr', function() {
     });
   });
 
+  describe('Requestr.parseSerialization', function() {
+    it('should be defined', function() {
+      expect(Requestr.parseSerialization).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
   describe('Requestr.loadPage', function() {
     afterEach(function() {
       document.documentElement.classList.remove(Requestr.LOADING_CLASS);
