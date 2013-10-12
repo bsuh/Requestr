@@ -13,7 +13,7 @@ describe('Requestr', function() {
     expect(Requestr.ELEMENTS_QUERY).toBe('[rel~="stylesheet"][href], [rel~="icon"][href], [src]');
     expect(Requestr.SERIALIZATION_QUERY).toBe('script[type="text/requestr-serialization"]');
     expect(Requestr.JS_ELEMENT_ATTRIBUTE).toBe('data-requestr-js');
-    expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(100000);
+    expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(40000);
 
     expect(Requestr.serialization).toBe(null);
     expect(Requestr.onEvent).toBe(null);
