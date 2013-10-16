@@ -1,0 +1,51 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  background-color: #222;
+}
+
+img {
+  float: left;
+  margin: 10px 0 0 10px;
+}
+
+.icon {
+  float: left;
+  margin: 10px 0 0 10px;
+  height: 64px;
+  width: 64px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #CCC;
+}
+
+.logo1 {
+  background-image: url(../img/bing.png);
+}
+
+.logo2 {
+  background-image: url(../img/tweet.png);
+}
+
+.logo3 {
+  background-image: url(../img/google-plus-1.png);
+}
+
+.logo4 {
+  background-image: url(../img/itunes.png);
+}
+
+.logo5 {
+  background-image: url(../img/paypal.png);
+}
+
+html {
+  background-image: url(../ts.jpg);
+  background-position: right bottom;
+  background-repeat: no-repeat;
+}
