@@ -420,11 +420,4 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Determin if this is needed, if so add test.
-  describe('Requestr.getDocType', function() {
-    it('should be defined', function() {
-      expect(Requestr.getDocType).toBeDefined();
-    });
-  });
-
 });
