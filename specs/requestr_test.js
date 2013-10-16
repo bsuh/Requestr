@@ -23,6 +23,9 @@ describe('Requestr', function() {
     expect(Requestr.urlParsingEnabledElement.LINK).toBeDefined();
     expect(Requestr.urlParsingEnabledElement.SCRIPT).toBeDefined();
 
+    expect(Requestr.resolvedUrls).toBeDefined();
+    expect(Requestr.thirdParty).toBeDefined();
+
     expect(Requestr.customEvents).toBeDefined();
     expect(Requestr.customEvents.REQUESTR_READY).toBe('requestrReady');
     expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe('documentLoadStart');
@@ -30,6 +33,7 @@ describe('Requestr', function() {
     expect(Requestr.customEvents.DOCUMENT_LOAD_ERROR).toBe('documentLoadError');
     expect(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE).toBe('documentLoadComplete');
     expect(Requestr.customEvents.DOCUMENT_RENDERED).toBe('documentRendered');
+    expect(Requestr.customEvents.DOCUMENT_BLOB_URL_CREATED).toBe('documentBlobUrlCreated');
     expect(Requestr.customEvents.RESOURCE_API_ERROR).toBe('resourceApiError');
     expect(Requestr.customEvents.RESOURCE_LOAD_START).toBe('resourceLoadStart');
     expect(Requestr.customEvents.RESOURCE_LOAD_PROGRESS).toBe('resourceLoadProgress');
@@ -195,7 +199,7 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Address missing tests.
+  // TODO (jam@): Address missing tests. Update test due to changes.
   describe('Requestr.parsePage', function() {
     beforeEach(function() {
       delete Requestr.service;
@@ -230,6 +234,27 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (jam@): Add missing test.
+  describe('Requestr.requestDataUriFromService', function() {
+    it('should be defined', function() {
+      expect(Requestr.requestDataUriFromService).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.getParseCssFromRules', function() {
+    it('should be defined', function() {
+      expect(Requestr.getParseCssFromRules).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.getUrlsFromCssString', function() {
+    it('should be defined', function() {
+      expect(Requestr.getUrlsFromCssString).toBeDefined();
+    });
+  });
+
   describe('Requestr.removeResponseLoadXhrListener', function() {
     it('should be defined', function() {
       expect(Requestr.removeResponseLoadXhrListener).toBeDefined();
@@ -247,7 +272,7 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Add missing tests when finalized.
+  // TODO (jam@): Add missing tests when finalized. Update test due to changes.
   describe('Requestr.handleResponseResources', function() {
     it('should be defined', function() {
       expect(Requestr.handleResponseResources).toBeDefined();
@@ -329,6 +354,55 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (jam@): Add missing test.
+  describe('Requestr.completeResolvingDocument', function() {
+    it('should be defined', function() {
+      expect(Requestr.completeResolvingDocument).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.loadExternalCssUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.loadExternalCssUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.handleDocumentCssUris', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleDocumentCssUris).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.resolveDocumentCssUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.resolveDocumentCssUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.parseCssResourcesForUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.parseCssResourcesForUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.replaceDocumentUrlsWithBlob', function() {
+    it('should be defined', function() {
+      expect(Requestr.replaceDocumentUrlsWithBlob).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.createUrlFromResource', function() {
+    it('should be defined', function() {
+      expect(Requestr.createUrlFromResource).toBeDefined();
+    });
+  });
+
   // TODO (jam@): Improve test to include checking the data and blob.
   describe('Requestr.dataURItoBlob', function() {
     it('should be defined', function() {
@@ -367,6 +441,7 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (@jam): Update test.
   describe('Requestr.createDocumentBlobUrl', function() {
     it('should be defined', function() {
       expect(Requestr.createDocumentBlobUrl).toBeDefined();
@@ -417,6 +492,13 @@ describe('Requestr', function() {
 
       expect(el2.getAttribute('data-test')).toBe('works');
       expect(el2.getAttribute('data-removeit')).toBe(null);
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.thirdParty.preg_quote', function() {
+    it('should be defined', function() {
+      expect(Requestr.thirdParty.preg_quote).toBeDefined();
     });
   });
 
