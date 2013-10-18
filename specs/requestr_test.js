@@ -40,6 +40,10 @@ describe('Requestr', function() {
     expect(Requestr.customEvents.RESOURCE_LOAD_ERROR).toBe('resourceLoadError');
     expect(Requestr.customEvents.RESOURCE_LOAD_COMPLETE).toBe('resourceLoadComplete');
     expect(Requestr.customEvents.RESOURCE_RESOLVING).toBe('resourceResolving');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_START).toBe('externalCssLoadStart');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe('externalCssLoadComplete');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe('externalCssLoadProgress');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe('externalCssLoadError');
   });
 
   describe('Requestr.dispatchCustomEvent', function() {
@@ -162,7 +166,7 @@ describe('Requestr', function() {
       var progress = {totalSize: 100, loaded: 50};
       Requestr.pageLoadProgress(progress);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {progress: Math.round(progress.loaded / progress.totalSize * 100)});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {progress: Math.round(progress.loaded / progress.totalSize * 100), bytes: 50, total: 100});
     });
   });
 
@@ -377,6 +381,20 @@ describe('Requestr', function() {
   });
 
   // TODO (jam@): Add missing test.
+  describe('Requestr.handleExternalCssProgress', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleExternalCssProgress).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.handleExternalCssResourcesError', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleExternalCssResourcesError).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
   describe('Requestr.handleDocumentCssUris', function() {
     it('should be defined', function() {
       expect(Requestr.handleDocumentCssUris).toBeDefined();
@@ -426,6 +444,13 @@ describe('Requestr', function() {
 
       expect(window.Blob).toHaveBeenCalled();
       expect(window.Uint8Array).toHaveBeenCalled();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.dataStringToBlob', function() {
+    it('should be defined', function() {
+      expect(Requestr.dataStringToBlob).toBeDefined();
     });
   });
 
