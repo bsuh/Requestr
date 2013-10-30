@@ -13,7 +13,7 @@ describe('Requestr', function() {
     expect(Requestr.ELEMENTS_QUERY).toBe('[rel~="stylesheet"][href], [rel~="icon"][href], [src]');
     expect(Requestr.SERIALIZATION_QUERY).toBe('script[type="text/requestr-serialization"]');
     expect(Requestr.JS_ELEMENT_ATTRIBUTE).toBe('data-requestr-js');
-    expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(100000);
+    expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(40000);
 
     expect(Requestr.serialization).toBe(null);
     expect(Requestr.onEvent).toBe(null);
@@ -23,6 +23,9 @@ describe('Requestr', function() {
     expect(Requestr.urlParsingEnabledElement.LINK).toBeDefined();
     expect(Requestr.urlParsingEnabledElement.SCRIPT).toBeDefined();
 
+    expect(Requestr.resolvedUrls).toBeDefined();
+    expect(Requestr.thirdParty).toBeDefined();
+
     expect(Requestr.customEvents).toBeDefined();
     expect(Requestr.customEvents.REQUESTR_READY).toBe('requestrReady');
     expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe('documentLoadStart');
@@ -30,12 +33,17 @@ describe('Requestr', function() {
     expect(Requestr.customEvents.DOCUMENT_LOAD_ERROR).toBe('documentLoadError');
     expect(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE).toBe('documentLoadComplete');
     expect(Requestr.customEvents.DOCUMENT_RENDERED).toBe('documentRendered');
+    expect(Requestr.customEvents.DOCUMENT_BLOB_URL_CREATED).toBe('documentBlobUrlCreated');
     expect(Requestr.customEvents.RESOURCE_API_ERROR).toBe('resourceApiError');
     expect(Requestr.customEvents.RESOURCE_LOAD_START).toBe('resourceLoadStart');
     expect(Requestr.customEvents.RESOURCE_LOAD_PROGRESS).toBe('resourceLoadProgress');
     expect(Requestr.customEvents.RESOURCE_LOAD_ERROR).toBe('resourceLoadError');
     expect(Requestr.customEvents.RESOURCE_LOAD_COMPLETE).toBe('resourceLoadComplete');
     expect(Requestr.customEvents.RESOURCE_RESOLVING).toBe('resourceResolving');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_START).toBe('externalCssLoadStart');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe('externalCssLoadComplete');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe('externalCssLoadProgress');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe('externalCssLoadError');
   });
 
   describe('Requestr.dispatchCustomEvent', function() {
@@ -84,6 +92,14 @@ describe('Requestr', function() {
     });
   });
 
+  describe('Requestr.parseSerialization', function() {
+    it('should be defined', function() {
+      expect(Requestr.parseSerialization).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  // TODO (jam@): Update due to changes.
   describe('Requestr.loadPage', function() {
     afterEach(function() {
       document.documentElement.classList.remove(Requestr.LOADING_CLASS);
@@ -103,7 +119,7 @@ describe('Requestr', function() {
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
       expect(typeof Requestr.xhr).toBe('object');
       expect(Requestr.xhr.blobUrlCallback).toBe(undefined);
-      expect(Requestr.xhr.responseType).toBe('document');
+      //expect(Requestr.xhr.responseType).toBe('document');
     });
 
     it('should make xhr to load page with callback', function() {
@@ -118,7 +134,7 @@ describe('Requestr', function() {
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
       expect(typeof Requestr.xhr).toBe('object');
       expect(Requestr.xhr.blobUrlCallback).toBe(someCallBack);
-      expect(Requestr.xhr.responseType).toBe('document');
+      //expect(Requestr.xhr.responseType).toBe('document');
     });
   });
 
@@ -150,7 +166,7 @@ describe('Requestr', function() {
       var progress = {totalSize: 100, loaded: 50};
       Requestr.pageLoadProgress(progress);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {progress: Math.round(progress.loaded / progress.totalSize * 100)});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {progress: Math.round(progress.loaded / progress.totalSize * 100), bytes: 50, total: 100});
     });
   });
 
@@ -188,7 +204,7 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Address missing tests.
+  // TODO (jam@): Address missing tests. Update test due to changes.
   describe('Requestr.parsePage', function() {
     beforeEach(function() {
       delete Requestr.service;
@@ -223,6 +239,34 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (jam@): Add missing test.
+  describe('Requestr.requestDataUriFromService', function() {
+    it('should be defined', function() {
+      expect(Requestr.requestDataUriFromService).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.getParseCssFromRules', function() {
+    it('should be defined', function() {
+      expect(Requestr.getParseCssFromRules).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.getNormalizedCssString', function() {
+    it('should be defined', function() {
+      expect(Requestr.getNormalizedCssString).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.getUrlsFromCssString', function() {
+    it('should be defined', function() {
+      expect(Requestr.getUrlsFromCssString).toBeDefined();
+    });
+  });
+
   describe('Requestr.removeResponseLoadXhrListener', function() {
     it('should be defined', function() {
       expect(Requestr.removeResponseLoadXhrListener).toBeDefined();
@@ -240,7 +284,7 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Add missing tests when finalized.
+  // TODO (jam@): Add missing tests when finalized. Update test due to changes.
   describe('Requestr.handleResponseResources', function() {
     it('should be defined', function() {
       expect(Requestr.handleResponseResources).toBeDefined();
@@ -322,6 +366,69 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (jam@): Add missing test.
+  describe('Requestr.completeResolvingDocument', function() {
+    it('should be defined', function() {
+      expect(Requestr.completeResolvingDocument).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.loadExternalCssUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.loadExternalCssUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.handleExternalCssProgress', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleExternalCssProgress).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.handleExternalCssResourcesError', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleExternalCssResourcesError).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.handleDocumentCssUris', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleDocumentCssUris).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.resolveDocumentCssUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.resolveDocumentCssUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.parseCssResourcesForUrls', function() {
+    it('should be defined', function() {
+      expect(Requestr.parseCssResourcesForUrls).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.replaceDocumentUrlsWithBlob', function() {
+    it('should be defined', function() {
+      expect(Requestr.replaceDocumentUrlsWithBlob).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.createUrlFromResource', function() {
+    it('should be defined', function() {
+      expect(Requestr.createUrlFromResource).toBeDefined();
+    });
+  });
+
   // TODO (jam@): Improve test to include checking the data and blob.
   describe('Requestr.dataURItoBlob', function() {
     it('should be defined', function() {
@@ -337,6 +444,13 @@ describe('Requestr', function() {
 
       expect(window.Blob).toHaveBeenCalled();
       expect(window.Uint8Array).toHaveBeenCalled();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.dataStringToBlob', function() {
+    it('should be defined', function() {
+      expect(Requestr.dataStringToBlob).toBeDefined();
     });
   });
 
@@ -360,6 +474,7 @@ describe('Requestr', function() {
     });
   });
 
+  // TODO (@jam): Update test.
   describe('Requestr.createDocumentBlobUrl', function() {
     it('should be defined', function() {
       expect(Requestr.createDocumentBlobUrl).toBeDefined();
@@ -413,10 +528,10 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Determin if this is needed, if so add test.
-  describe('Requestr.getDocType', function() {
+  // TODO (jam@): Add missing test.
+  describe('Requestr.thirdParty.preg_quote', function() {
     it('should be defined', function() {
-      expect(Requestr.getDocType).toBeDefined();
+      expect(Requestr.thirdParty.preg_quote).toBeDefined();
     });
   });
 

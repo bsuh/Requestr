@@ -16,7 +16,11 @@ module.exports = function(grunt) {
         undef: true,
         boss: true,
         eqnull: true,
-        browser: true
+        browser: true,
+        globals: {
+          console: true,
+          unescape: true
+        }
       },
       all: ['lib/requestr.js']
     },
