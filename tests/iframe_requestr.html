@@ -17,7 +17,14 @@
             }
             // Setting the source of the iFrame after parsed by Requestr.
             function handlePageBlobUrl (result) {
-              document.getElementById('app').src = result.url;
+              var appFrame = document.getElementById('app');
+              // Hack for IE which doesn't support document blob URLs.
+              if (Requestr.browser.ieInternetExplorer) {
+                appFrame.contentWindow.document.documentElement.innerHTML = result.html;
+              } else {
+                // Webkit and Firefox
+                appFrame.src = result.url;
+              }
             }
             // Handling Requestr events for loading UI.
             Requestr.onEvent = function (e) {
@@ -52,7 +59,7 @@
         </script>
         <script type="text/javascript"></script>
         <!-- Requestr should always be inline, but external is okay for functional testing -->
-        <script src="../lib/requestr.min.js"></script>
+        <script src="../lib/requestr.js"></script>
         <!-- http://apps-sandbox.tradeshift.com:8293/rest/app/resolveresources -->
         <script type="text/requestr-serialization">
             {
