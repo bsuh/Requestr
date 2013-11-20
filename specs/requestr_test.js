@@ -130,7 +130,7 @@ describe('Requestr', function() {
       Requestr.loadPage('some.html', someCallBack);
 
       expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
-      expect(Requestr.stopWindow).toHaveBeenCalled();
+      expect(Requestr.stopWindow).not.toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
       expect(typeof Requestr.xhr).toBe('object');
       expect(Requestr.xhr.blobUrlCallback).toBe(someCallBack);
