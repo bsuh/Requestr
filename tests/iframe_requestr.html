@@ -64,7 +64,9 @@
         <script type="text/requestr-serialization">
             {
                 "service": "http://localhost:8868/tradeshift-app-service/rest/app/resolveresources",
-                "maxFileSize": 200000
+                "maxFileSize": 200000,
+                "allow": ["http://requestr:8488"],
+                "exclude": ["http://fonts.googleapis.com", "http://requestr:8488/tests/data/img/bing.png"]
             }
         </script>
         <style type="text/css">
