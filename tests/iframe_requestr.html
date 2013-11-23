@@ -25,6 +25,14 @@
                 // Webkit and Firefox
                 appFrame.src = result.url;
               }
+              var someFragment = '<img src="img/feedburner.png" />';
+              // Testing loading a fragment.
+              Requestr.loadFragment('http://requestr:8488/tests/data/index.html', someFragment, function (fragment){
+                var divTest = document.createElement('div');
+                divTest.innerHTML = fragment;
+                divTest.setAttribute('style', 'position: absolute; bottom: 0%; left: 0%; background: #E3005F;');
+                document.body.appendChild(divTest);
+              });
             }
             // Handling Requestr events for loading UI.
             Requestr.onEvent = function (e) {
@@ -64,7 +72,9 @@
         <script type="text/requestr-serialization">
             {
                 "service": "http://localhost:8868/tradeshift-app-service/rest/app/resolveresources",
-                "maxFileSize": 200000
+                "maxFileSize": 200000,
+                "allow": ["http://requestr:8488"],
+                "exclude": ["http://fonts.googleapis.com", "http://requestr:8488/tests/data/img/bing.png"]
             }
         </script>
         <style type="text/css">
