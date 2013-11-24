@@ -1,3 +1,4 @@
+/*jshint node:true*/
 module.exports = function(grunt) {
   //
   grunt.initConfig({
@@ -8,7 +9,9 @@ module.exports = function(grunt) {
       options: {
         jshintrc: '.jshintrc',
       },
-      all: ['lib/requestr.js']
+      all: [
+        '.'
+      ]
     },
     //
     shell: {

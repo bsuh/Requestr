@@ -1,3 +1,9 @@
+/* Globals exposed by Jasmine*/
+/* global jasmine, isCommonJS, exports, spyOn, it, xit, expect, runs, waits, waitsFor, beforeEach, afterEach, describe, xdescribe */
+
+/* Gobals exposed by Reqestr */
+/* global Requestr */
+
 describe('Requestr', function() {
 
   it('should be defined', function() {
