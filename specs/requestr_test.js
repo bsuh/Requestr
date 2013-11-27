@@ -123,9 +123,7 @@ describe('Requestr', function() {
       expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
-      expect(typeof Requestr.xhr).toBe('object');
-      expect(Requestr.xhr.blobUrlCallback).toBe(undefined);
-      //expect(Requestr.xhr.responseType).toBe('document');
+
     });
 
     it('should make xhr to load page with callback', function() {
@@ -138,26 +136,6 @@ describe('Requestr', function() {
       expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).not.toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
-      expect(typeof Requestr.xhr).toBe('object');
-      expect(Requestr.xhr.blobUrlCallback).toBe(someCallBack);
-      //expect(Requestr.xhr.responseType).toBe('document');
-    });
-  });
-
-  describe('Requestr.removePageLoadXhrListeners', function() {
-    it('should be defined', function() {
-      expect(Requestr.removePageLoadXhrListeners).toBeDefined();
-    });
-
-    it('should remove event listeners', function() {
-      spyOn(Requestr.xhr, 'removeEventListener');
-
-      Requestr.removePageLoadXhrListeners();
-
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('load', Requestr.parsePage, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('progress', Requestr.pageLoadProgress, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('error', Requestr.pageLoadError, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('abort', Requestr.pageLoadAbort, true);
     });
   });
 
@@ -182,13 +160,11 @@ describe('Requestr', function() {
     });
 
     it('should dispatch custom error event', function() {
-      spyOn(Requestr, 'removePageLoadXhrListeners');
       spyOn(Requestr, 'dispatchCustomEvent');
 
       var error = {some: 'test'};
       Requestr.pageLoadError(error);
 
-      expect(Requestr.removePageLoadXhrListeners).toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: error});
     });
   });
@@ -199,13 +175,11 @@ describe('Requestr', function() {
     });
 
     it('should dispatch custom abort event', function() {
-      spyOn(Requestr, 'removePageLoadXhrListeners');
       spyOn(Requestr, 'dispatchCustomEvent');
 
       var abort = {some: 'test'};
       Requestr.pageLoadError(abort);
 
-      expect(Requestr.removePageLoadXhrListeners).toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: abort});
     });
   });
@@ -228,14 +202,12 @@ describe('Requestr', function() {
           html = '<img src="http://blog.intuit.co.uk/wp-content/uploads/2013/01/tradeshift_logo_blue.jpg" />';
 
       spyOn(Requestr, 'dispatchCustomEvent');
-      spyOn(Requestr, 'removePageLoadXhrListeners');
 
       doc.body.innerHTML = html;
       Requestr.service = 'http://some.domain.com/my/api/url';
       Requestr.parsePage({target: {response: doc}});
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE);
-      expect(Requestr.removePageLoadXhrListeners).toHaveBeenCalled();
       expect(Requestr.ownerDocument).toBe(doc);
       // TODO (jam@): Add checks to elements to be matched.
       expect(doc.head.getElementsByTagName('base').length).toBe(1);
@@ -274,6 +246,12 @@ describe('Requestr', function() {
   });
 
   describe('Requestr.removeResponseLoadXhrListener', function() {
+    afterEach(function() {
+      Requestr.xhr = {removeEventListener: function() {}};
+    });
+    afterEach(function() {
+      Requestr.xhr = null;
+    });
     it('should be defined', function() {
       expect(Requestr.removeResponseLoadXhrListener).toBeDefined();
     });

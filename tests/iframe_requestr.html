@@ -73,10 +73,20 @@
             {
                 "service": "http://localhost:8868/tradeshift-app-service/rest/app/resolveresources",
                 "maxFileSize": 200000,
-                "allow": ["http://requestr:8488"],
-                "exclude": ["http://fonts.googleapis.com", "http://requestr:8488/tests/data/img/bing.png"]
+                "allow": ["http://requestr:8488", "http://static.bbci.co.uk", "http://node1.bbcimg.co.uk"],
+                "exclude": ["http://fonts.googleapis.com", "http://requestr:8488/tests/data/img/bing.png"],
+                "expires": "Mon, 10 Mar 2014 20:00:00 GMT"
+            }
+        </script>     
+        <!--
+<script type="text/requestr-serialization">
+            {
+                "service": "http://localhost:8868/tradeshift-app-service/rest/app/resolveresources",
+                "maxFileSize": 200000,
+                "expires": "Mon, 10 Mar 2014 20:00:00 GMT"
             }
         </script>
+-->
         <style type="text/css">
             * {
                 margin: 0;
