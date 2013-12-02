@@ -11,6 +11,8 @@ describe('Requestr', function() {
     expect(Requestr).toBeDefined();
     expect(window.Requestr).toBeDefined();
     expect(window.serialization).toBe(undefined);
+    expect(window.CustomEvent).toBeDefined();
+    expect(window.URL).toBeDefined();
   });
 
   it('should check for initialization', function() {
@@ -32,6 +34,11 @@ describe('Requestr', function() {
     expect(Requestr.resolvedUrls).toBeDefined();
     expect(Requestr.thirdParty).toBeDefined();
 
+    expect(Requestr.browser).toBeDefined();
+    expect(Requestr.browser.isSafari).toBeDefined();
+    expect(Requestr.browser.isFirefox).toBeDefined();
+    expect(Requestr.browser.ieInternetExplorer).toBeDefined();
+
     expect(Requestr.customEvents).toBeDefined();
     expect(Requestr.customEvents.REQUESTR_READY).toBe('requestrReady');
     expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe('documentLoadStart');
@@ -50,6 +57,21 @@ describe('Requestr', function() {
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe('externalCssLoadComplete');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe('externalCssLoadProgress');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe('externalCssLoadError');
+
+    expect(Requestr.CACHING_DB_NAME).toBe('Requestr');
+    expect(Requestr.CACHING_DB_STORE_NAME).toBe('datauris');
+    expect(Requestr.CACHING_DB_STORE_KEY).toBe('url');
+    expect(Requestr.CACHING_DB_VERSION).toBeDefined();
+
+    expect(Requestr.localDb || Requestr.localDbPolyfill).toBeDefined();
+
+    expect(Requestr.resourcesToCache).toEqual([]);
+    expect(Requestr.resourcesFetchedFromCache).toEqual([]);
+    expect(Requestr.cache).toBeDefined();
+    expect(Requestr.cache.expires).toBeDefined();
+    expect(Requestr.cache.pollyfill).toBeDefined();
+    expect(Requestr.cache.pollyfill.websql).toBeDefined();
+    expect(Requestr.WEBSQL_DEFAULT_SIZE).toBe(2.5 * 1024 * 1024);
   });
 
   describe('Requestr.dispatchCustomEvent', function() {
@@ -90,17 +112,90 @@ describe('Requestr', function() {
     it('should be defined', function() {
       expect(Requestr.stopWindow).toBeDefined();
     });
-    // TODO (jam@): Add test when IE support is implemented.
+
     it('should call window stop', function() {
       spyOn(window, 'stop');
       Requestr.stopWindow();
       expect(window.stop).toHaveBeenCalled();
+    });
+
+    it('should call window stop with IE command', function() {
+      var stop = window.stop;
+      window.stop = null;
+      spyOn(document, 'execCommand');
+
+      Requestr.stopWindow();
+
+      expect(document.execCommand).toHaveBeenCalledWith('Stop');
     });
   });
 
   describe('Requestr.parseSerialization', function() {
     it('should be defined', function() {
       expect(Requestr.parseSerialization).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.initLocalDb', function() {
+    it('should be defined', function() {
+      expect(Requestr.initLocalDb).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.update', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.update).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.pollyfill.websql.add', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.pollyfill.websql.add).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.add', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.add).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.pollyfill.websql.read', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.pollyfill.websql.read).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.read', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.read).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.remove', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.remove).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.cache.clear', function() {
+    it('should be defined', function() {
+      expect(Requestr.cache.clear).toBeDefined();
+    });
+    // TODO (jam@): Add test!
+  });
+
+  describe('Requestr.loadFragment', function() {
+    it('should be defined', function() {
+      expect(Requestr.loadFragment).toBeDefined();
     });
     // TODO (jam@): Add test!
   });
@@ -218,6 +313,13 @@ describe('Requestr', function() {
   });
 
   // TODO (jam@): Add missing test.
+  describe('Requestr.getMatchingObjectWithUrl', function() {
+    it('should be defined', function() {
+      expect(Requestr.getMatchingObjectWithUrl).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
   describe('Requestr.requestDataUriFromService', function() {
     it('should be defined', function() {
       expect(Requestr.requestDataUriFromService).toBeDefined();
@@ -225,16 +327,9 @@ describe('Requestr', function() {
   });
 
   // TODO (jam@): Add missing test.
-  describe('Requestr.getParseCssFromRules', function() {
+  describe('Requestr.getParsedCssFromRules', function() {
     it('should be defined', function() {
-      expect(Requestr.getParseCssFromRules).toBeDefined();
-    });
-  });
-
-  // TODO (jam@): Add missing test.
-  describe('Requestr.getNormalizedCssString', function() {
-    it('should be defined', function() {
-      expect(Requestr.getNormalizedCssString).toBeDefined();
+      expect(Requestr.getParsedCssFromRules).toBeDefined();
     });
   });
 
@@ -365,9 +460,9 @@ describe('Requestr', function() {
   });
 
   // TODO (jam@): Add missing test.
-  describe('Requestr.handleExternalCssProgress', function() {
+  describe('Requestr.handleExternalCssResourcesProgress', function() {
     it('should be defined', function() {
-      expect(Requestr.handleExternalCssProgress).toBeDefined();
+      expect(Requestr.handleExternalCssResourcesProgress).toBeDefined();
     });
   });
 
@@ -400,9 +495,9 @@ describe('Requestr', function() {
   });
 
   // TODO (jam@): Add missing test.
-  describe('Requestr.replaceDocumentUrlsWithBlob', function() {
+  describe('Requestr.matchResourceWithCache', function() {
     it('should be defined', function() {
-      expect(Requestr.replaceDocumentUrlsWithBlob).toBeDefined();
+      expect(Requestr.matchResourceWithCache).toBeDefined();
     });
   });
 
@@ -410,6 +505,13 @@ describe('Requestr', function() {
   describe('Requestr.createUrlFromResource', function() {
     it('should be defined', function() {
       expect(Requestr.createUrlFromResource).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.replaceDocumentUrlsWithBlob', function() {
+    it('should be defined', function() {
+      expect(Requestr.replaceDocumentUrlsWithBlob).toBeDefined();
     });
   });
 
@@ -516,6 +618,13 @@ describe('Requestr', function() {
   describe('Requestr.thirdParty.preg_quote', function() {
     it('should be defined', function() {
       expect(Requestr.thirdParty.preg_quote).toBeDefined();
+    });
+  });
+
+  // TODO (jam@): Add missing test.
+  describe('Requestr.init', function() {
+    it('should be defined', function() {
+      expect(Requestr.init).toBeDefined();
     });
   });
 
