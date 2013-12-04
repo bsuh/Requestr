@@ -325,6 +325,7 @@ describe('Requestr', function() {
 
     afterEach(function() {
       resources = success = error = null;
+      Requestr.localDbPolyfill = null;
     });
 
     it('should be defined', function() {
@@ -453,41 +454,144 @@ describe('Requestr', function() {
   });
 
   describe('Requestr.cache.pollyfill.websql.read', function() {
+    beforeEach(function() {
+      Requestr.localDbPolyfill = {};
+    });
+
+    afterEach(function() {
+      Requestr.localDbPolyfill = null;
+    });
+
     it('should be defined', function() {
       expect(Requestr.cache.pollyfill.websql.read).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should be defined', function() {
+      var success, requests = [{
+        Url: 'http://tradeshift.com'
+      }];
+
+      Requestr.localDbPolyfill.transaction = function(func) {
+        func({executeSql: function(p1, p2, s, e) {
+          success = true;
+        }});
+      };
+
+      Requestr.cache.pollyfill.websql.read(requests, function(r) {success = true;});
+
+      expect(success).toBe(true);
+    });
   });
 
   describe('Requestr.cache.read', function() {
+    var request;
+
+    beforeEach(function() {
+      Requestr.localDbPolyfill = {};
+      Requestr.browser.isSafari = false;
+      Requestr.localDb = {
+        transaction: function() {return {objectStore: function() {return {get: function(url) {return request;}};}};},
+        objectStoreNames: {length: 1}
+      };
+    });
+
+    afterEach(function() {
+      Requestr.localDbPolyfill = null;
+      Requestr.browser.isSafari = false;
+      Requestr.localDb = null;
+    });
+
     it('should be defined', function() {
       expect(Requestr.cache.read).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should read resource from cache', function() {
+      var requests, result;
+
+      request = {};
+
+      requests = [{Url: 'http://tradeshift.com'}];
+
+      Requestr.cache.read(requests, function(r) {result = r;});
+      request.onsuccess({target: {result: {}}});
+
+      expect(result.length).toBe(1);
+    });
+
+    it('should not read resource from cache', function() {
+      var requests, result;
+
+      request = {};
+
+      requests = [{Url: 'http://tradeshift.com'}];
+
+      Requestr.cache.read(requests, function(r) {result = r;});
+      request.onerror(null);
+
+      expect(result.length).toBe(0);
+    });
   });
 
   describe('Requestr.cache.remove', function() {
     it('should be defined', function() {
       expect(Requestr.cache.remove).toBeDefined();
     });
-    // TODO (jam@): Add test!
+    // TODO (jam@): Add test when functionality is ready.
   });
 
   describe('Requestr.cache.clear', function() {
+    afterEach(function() {
+      Requestr.localDbPolyfill = null;
+      Requestr.browser.isSafari = false;
+      Requestr.localDb = null;
+      window.indexedDB = null;
+    });
+
     it('should be defined', function() {
       expect(Requestr.cache.clear).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should clear indexeddb cache', function() {
+      Requestr.localDb = {};
+      window.indexedDB = {deleteDatabase: function() {}};
+
+      spyOn(window.indexedDB, 'deleteDatabase');
+
+      Requestr.cache.clear();
+
+      expect(window.indexedDB.deleteDatabase).toHaveBeenCalledWith(Requestr.CACHING_DB_NAME);
+    });
+
+    it('should clear websql cache', function() {
+      Requestr.browser.isSafari = true;
+      Requestr.localDbPolyfill = {transaction: function() {}};
+
+      spyOn(Requestr.localDbPolyfill, 'transaction');
+
+      Requestr.cache.clear();
+
+      expect(Requestr.localDbPolyfill.transaction).toHaveBeenCalledWith(jasmine.any(Function));
+    });
   });
 
   describe('Requestr.loadFragment', function() {
     it('should be defined', function() {
       expect(Requestr.loadFragment).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should parse fragment', function() {
+      var result, source = 'http://tradeshift.com', html = '<p>tradeshift</p>';
+
+      spyOn(Requestr, 'parsePage').andCallThrough();
+
+      Requestr.loadFragment(source, html, function(r) {result = r;});
+
+      expect(Requestr.parsePage).toHaveBeenCalledWith({originUrl: source, target: jasmine.any(Object)}, jasmine.any(Function), null, null, true);
+      expect(typeof result).toBe('string');
+      expect(result).toBe('<p>tradeshift</p>');
+    });
   });
 
-  // TODO (jam@): Update due to changes.
   describe('Requestr.loadPage', function() {
     afterEach(function() {
       document.documentElement.classList.remove(Requestr.LOADING_CLASS);
@@ -499,25 +603,58 @@ describe('Requestr', function() {
     it('should make xhr to load page with no callback', function() {
       spyOn(Requestr, 'stopWindow');
       spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'requestDataUriFromService');
 
       Requestr.loadPage('some.html');
+
+      var url = document.createElement('a');
+      url.setAttribute('href', 'some.html');
+      url = url.href;
 
       expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
-
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(Requestr.service,
+        [{
+          Url: url,
+          Document: true,
+          Token: null,
+          Type: 'STRING'
+        }],
+        jasmine.any(Object),
+        null,
+        Requestr.cache.expires,
+        2000000
+      );
     });
 
     it('should make xhr to load page with callback', function() {
       spyOn(Requestr, 'stopWindow');
       spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'requestDataUriFromService');
 
       var someCallBack = function myFancyFunction() {};
       Requestr.loadPage('some.html', someCallBack);
 
+      var url = document.createElement('a');
+      url.setAttribute('href', 'some.html');
+      url = url.href;
+
       expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).not.toHaveBeenCalled();
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(Requestr.service,
+        [{
+          Url: url,
+          Document: true,
+          Token: null,
+          Type: 'STRING'
+        }],
+        jasmine.any(Object),
+        null,
+        Requestr.cache.expires,
+        2000000
+      );
     });
   });
 
@@ -566,7 +703,7 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Address missing tests. Update test due to changes.
+  // TODO (jam@): Address missing tests. Update test due to changes (callback, expires, mutator, fragment).
   describe('Requestr.parsePage', function() {
     beforeEach(function() {
       delete Requestr.service;
@@ -584,6 +721,7 @@ describe('Requestr', function() {
           html = '<img src="http://blog.intuit.co.uk/wp-content/uploads/2013/01/tradeshift_logo_blue.jpg" />';
 
       spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'requestDataUriFromService');
 
       doc.body.innerHTML = html;
       Requestr.service = 'http://some.domain.com/my/api/url';
@@ -596,34 +734,74 @@ describe('Requestr', function() {
       // TODO (jam@): Add checks to make sure Requestr elements are removed.
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_START);
       // TODO (jam@): Add checks to ensure the XHR is made with the proper data.
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
     });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.getMatchingObjectWithUrl', function() {
     it('should be defined', function() {
       expect(Requestr.getMatchingObjectWithUrl).toBeDefined();
     });
+
+    it('should return a match', function() {
+      var list = [{url: 'test'}], url = 'test';
+
+      var test = Requestr.getMatchingObjectWithUrl(list, url);
+
+      expect(test).toBe(list[0]);
+    });
+
+    it('should not return a match', function() {
+      var list = [{url: 'testing'}], url = 'test';
+
+      var test = Requestr.getMatchingObjectWithUrl(list, url);
+
+      expect(test).toBe(undefined);
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.requestDataUriFromService', function() {
     it('should be defined', function() {
       expect(Requestr.requestDataUriFromService).toBeDefined();
     });
+
+    it('should try to get resource from cache or service', function() {
+      var result;
+
+      spyOn(Requestr.cache, 'read').andCallThrough();
+
+      Requestr.requestDataUriFromService('ghghg', [], {load: function(r) {result = r;}}, function(r) {});
+
+      expect(Requestr.xhr.blobUrlCallback).toBeDefined();
+      expect(Requestr.cache.read).toHaveBeenCalled();
+      expect(result.target.response.Resources).toBeDefined();
+    });
+    // TODO (jam@): Improve and add missing tests.
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.getParsedCssFromRules', function() {
     it('should be defined', function() {
       expect(Requestr.getParsedCssFromRules).toBeDefined();
     });
+    // TODO (jam@): Add test!
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.getUrlsFromCssString', function() {
     it('should be defined', function() {
       expect(Requestr.getUrlsFromCssString).toBeDefined();
+    });
+
+    it('should not parse rules because not defined', function() {
+      var test = Requestr.getParsedCssFromRules(null);
+
+      expect(test).toBe(null);
+    });
+
+    it('should parse rules and return valid string', function() {
+      var test = Requestr.getParsedCssFromRules([{cssText: 'test'}, {cssText: ' testing'}]);
+
+      expect(typeof test).toBe('string');
+      expect(test).toBe('test testing');
     });
   });
 
@@ -732,73 +910,263 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.completeResolvingDocument', function() {
     it('should be defined', function() {
       expect(Requestr.completeResolvingDocument).toBeDefined();
     });
+
+    it('should set loaded into current document', function() {
+      var owner = {}, dimp = {documentElement: {outerHTML: 'ts'}};
+
+      spyOn(Requestr, 'setDocumentHtml');
+      spyOn(Requestr.cache, 'update');
+
+      Requestr.completeResolvingDocument(dimp, owner);
+
+      expect(Requestr.setDocumentHtml).toHaveBeenCalledWith(owner, dimp.documentElement.outerHTML);
+      expect(Requestr.cache.update).toHaveBeenCalled();
+    });
+
+    it('should create blob url from loaded document', function() {
+      spyOn(Requestr, 'createDocumentBlobUrl');
+      spyOn(Requestr.cache, 'update');
+
+      Requestr.completeResolvingDocument({}, {}, function() {});
+
+      expect(Requestr.createDocumentBlobUrl).toHaveBeenCalled();
+      expect(Requestr.cache.update).toHaveBeenCalled();
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.loadExternalCssUrls', function() {
     it('should be defined', function() {
       expect(Requestr.loadExternalCssUrls).toBeDefined();
     });
+
+    it('should resolve document with no additional urls to parse', function() {
+      spyOn(Requestr, 'resolveDocumentCssUrls');
+      spyOn(Requestr, 'dispatchCustomEvent');
+
+      Requestr.loadExternalCssUrls([], [], null, {}, []);
+
+      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+      expect(Requestr.dispatchCustomEvent).not.toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+    });
+
+    it('should parse additional urls before resolving document', function() {
+      spyOn(Requestr, 'requestDataUriFromService');
+      spyOn(Requestr, 'dispatchCustomEvent');
+
+      Requestr.loadExternalCssUrls(['http://tradeshift.com'], [], null, {}, []);
+
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.handleExternalCssResourcesProgress', function() {
     it('should be defined', function() {
       expect(Requestr.handleExternalCssResourcesProgress).toBeDefined();
     });
+
+    it('should dispatch external css load progress event', function() {
+      spyOn(Requestr, 'dispatchCustomEvent');
+
+      Requestr.handleExternalCssResourcesProgress({loaded: 24.6});
+
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+        Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS,
+        {bytes: 25}
+      );
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.handleExternalCssResourcesError', function() {
     it('should be defined', function() {
       expect(Requestr.handleExternalCssResourcesError).toBeDefined();
     });
+
+    it('should dispatch external css load error event', function() {
+      spyOn(Requestr, 'dispatchCustomEvent');
+
+      Requestr.handleExternalCssResourcesError('error');
+
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+        Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR,
+        {error: 'error'}
+      );
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.handleDocumentCssUris', function() {
     it('should be defined', function() {
       expect(Requestr.handleDocumentCssUris).toBeDefined();
     });
+
+    it('should attempt to resolve document with no additional external css to parse', function() {
+      spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'resolveDocumentCssUrls');
+
+      Requestr.handleDocumentCssUris({target: {response: {}}}, [], {}, [], function() {});
+
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+    });
+
+    it('should attempt to resolve document with no additional urls in external css to parse', function() {
+      spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'resolveDocumentCssUrls');
+      spyOn(Requestr, 'createUrlFromResource');
+
+      Requestr.handleDocumentCssUris({target: {response: {Resources: [{Url: 'http://tradeshift.com'}]}}}, [], {}, [], function() {});
+
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+      expect(Requestr.createUrlFromResource).toHaveBeenCalled();
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.resolveDocumentCssUrls', function() {
     it('should be defined', function() {
       expect(Requestr.resolveDocumentCssUrls).toBeDefined();
     });
+
+    it('should make callback with no urls to resolve', function() {
+      var success;
+
+      Requestr.resolveDocumentCssUrls([], {}, [], function() {success = true;});
+
+      expect(Requestr.resolveDocumentCssUrls).toBeDefined();
+      expect(success).toBe(true);
+    });
+
+    it('should make callback with urls resolved', function() {
+      var success;
+
+      spyOn(Requestr, 'replaceDocumentUrlsWithBlob');
+
+      Requestr.resolveDocumentCssUrls([{Data: 'hello'}], {}, [], function() {success = true;});
+
+      expect(Requestr.resolveDocumentCssUrls).toBeDefined();
+      expect(Requestr.replaceDocumentUrlsWithBlob).toHaveBeenCalled();
+      expect(success).toBe(true);
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.parseCssResourcesForUrls', function() {
     it('should be defined', function() {
       expect(Requestr.parseCssResourcesForUrls).toBeDefined();
     });
+
+    it('should not return any parsed urls', function() {
+      var test = Requestr.parseCssResourcesForUrls([]);
+
+      expect(test).toBe(undefined);
+    });
+
+    it('should return parsed urls from css', function() {
+      var test = Requestr.parseCssResourcesForUrls([{
+        Url: 'http://tradeshift.com',
+        Data: 'class {background: url(img.png)}'
+      }]);
+
+      expect(test[0]).toBe('http://tradeshift.com/img.png');
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.matchResourceWithCache', function() {
     it('should be defined', function() {
       expect(Requestr.matchResourceWithCache).toBeDefined();
     });
+
+    it('should not find match', function() {
+      spyOn(Requestr, 'getMatchingObjectWithUrl').andReturn(null);
+
+      var test = Requestr.matchResourceWithCache([], 'http://tradeshift.com');
+
+      expect(test).toBe(false);
+      expect(Requestr.getMatchingObjectWithUrl).toHaveBeenCalled();
+    });
+
+    it('should find match', function() {
+      spyOn(Requestr, 'getMatchingObjectWithUrl').andReturn({dataType: '', data: '', mimeType: ''});
+
+      var test = Requestr.matchResourceWithCache([], 'http://tradeshift.com');
+
+      expect(test).toBe(true);
+      expect(Requestr.getMatchingObjectWithUrl).toHaveBeenCalled();
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.createUrlFromResource', function() {
     it('should be defined', function() {
       expect(Requestr.createUrlFromResource).toBeDefined();
     });
+
+    it('should create url from blob of DATA_URI', function() {
+      spyOn(Requestr, 'dataStringToBlob');
+      spyOn(Requestr, 'dataURItoBlob');
+      spyOn(window.URL, 'createObjectURL').andReturn('blob://url');
+
+      var test = Requestr.createUrlFromResource({
+        Url: 'http://tradeshift.com',
+        ContentType: 'something',
+        Type: 'DATA_URI',
+        Token: 'vjheouivjejve==',
+        Data: 'somethingtoo'
+      });
+
+      expect(test).toBe('blob://url');
+      expect(Requestr.dataURItoBlob).toHaveBeenCalled();
+      expect(Requestr.dataStringToBlob).not.toHaveBeenCalled();
+    });
+
+    it('should create url from blob of STRING', function() {
+      spyOn(Requestr, 'dataStringToBlob');
+      spyOn(Requestr, 'dataURItoBlob');
+      spyOn(window.URL, 'createObjectURL').andReturn('blob://url');
+
+      var test = Requestr.createUrlFromResource({
+        Url: 'http://tradeshift.com',
+        ContentType: 'something',
+        Type: 'STRING',
+        Token: 'vjheouivjejve==',
+        Data: 'somethingtoo'
+      });
+
+      expect(test).toBe('blob://url');
+      expect(Requestr.dataStringToBlob).toHaveBeenCalled();
+      expect(Requestr.dataURItoBlob).not.toHaveBeenCalled();
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.replaceDocumentUrlsWithBlob', function() {
     it('should be defined', function() {
       expect(Requestr.replaceDocumentUrlsWithBlob).toBeDefined();
+    });
+
+    it('should replace url in image html', function() {
+      var dimp = window.document.implementation.createHTMLDocument('');
+      dimp.body.innerHTML = '<img src="http://tradeshift.com/img.png" />';
+
+      spyOn(Requestr, 'createUrlFromResource').andReturn('blob://url');
+
+      Requestr.replaceDocumentUrlsWithBlob({Url: 'http://tradeshift.com/img.png'}, dimp, []);
+
+      expect(Requestr.createUrlFromResource).toHaveBeenCalled();
+      expect(dimp.body.innerHTML).toBe('<img src="blob://url">');
+    });
+
+    it('should replace url in style element', function() {
+      var dimp = window.document.implementation.createHTMLDocument(''),
+          css = {innerText: 'rule {background: url(http://tradeshift.com/img.png)}'};
+
+      spyOn(Requestr, 'createUrlFromResource').andReturn('blob://url');
+
+      Requestr.replaceDocumentUrlsWithBlob({Url: 'http://tradeshift.com/img.png'}, dimp, [css]);
+
+      expect(Requestr.createUrlFromResource).toHaveBeenCalled();
+      expect(css.innerText).toBe('rule {background: url(blob://url)}');
     });
   });
 
@@ -820,10 +1188,17 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.dataStringToBlob', function() {
     it('should be defined', function() {
       expect(Requestr.dataStringToBlob).toBeDefined();
+    });
+
+    it('should make call to convert uri to blob', function() {
+      spyOn(Requestr, 'dataURItoBlob');
+
+      var test = Requestr.dataStringToBlob('data', 'mime');
+
+      expect(Requestr.dataURItoBlob).toHaveBeenCalledWith('data:mime;base64,ZGF0YQ==', 'mime');
     });
   });
 
@@ -901,17 +1276,41 @@ describe('Requestr', function() {
     });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.thirdParty.preg_quote', function() {
     it('should be defined', function() {
       expect(Requestr.thirdParty.preg_quote).toBeDefined();
     });
+
+    it('should normalize string for regex', function() {
+      var test = Requestr.thirdParty.preg_quote('http://tradeshift.com');
+
+      expect(test).toBe('http\\://tradeshift\\.com');
+    });
   });
 
-  // TODO (jam@): Add missing test.
   describe('Requestr.init', function() {
     it('should be defined', function() {
       expect(Requestr.init).toBeDefined();
+    });
+
+    it('should init with serialization', function() {
+      spyOn(Requestr, 'parseSerialization');
+
+      var ser = {};
+
+      Requestr.init(ser);
+
+      expect(Requestr.parseSerialization).toHaveBeenCalledWith(ser);
+    });
+
+    it('should wait for document loaded before parsing serialization', function() {
+      spyOn(Requestr, 'parseSerialization');
+      spyOn(window, 'addEventListener');
+
+      Requestr.init();
+
+      expect(window.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', jasmine.any(Function));
+      expect(Requestr.parseSerialization).not.toHaveBeenCalled();
     });
   });
 
