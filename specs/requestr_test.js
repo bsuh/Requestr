@@ -76,13 +76,10 @@ describe('Requestr', function() {
 
   describe('Requestr.dispatchCustomEvent', function() {
     beforeEach(function() {
-      // TODO (jam@): Add better test with CustomEvent support.
-      window.CustomEvent = function() {};
       Requestr.onEvent = null;
     });
     afterEach(function() {
       Requestr.onEvent = null;
-      window.CustomEvent = null;
     });
 
     it('should be defined', function() {
@@ -134,35 +131,325 @@ describe('Requestr', function() {
     it('should be defined', function() {
       expect(Requestr.parseSerialization).toBeDefined();
     });
-    // TODO (jam@): Add test!
+    it('should fail, no serialization', function() {
+      spyOn(window, 'dispatchEvent');
+
+      Requestr.parseSerialization(null);
+
+      expect(Requestr.serialization).toBe(null);
+      expect(window.dispatchEvent).not.toHaveBeenCalled();
+    });
+    it('should parse service property', function() {
+      spyOn(window, 'dispatchEvent');
+
+      Requestr.parseSerialization({textContent: '{"service": "works"}'});
+
+      expect(Requestr.serialization.service).toBe('works');
+      expect(window.dispatchEvent).toHaveBeenCalled();
+    });
+    it('should parse expires property', function() {
+      spyOn(window, 'dispatchEvent');
+
+      Requestr.parseSerialization({textContent: '{"expires": "Mon, 10 Mar 2014 20:00:00 GMT"}'});
+
+      expect(Requestr.serialization.expires).toBe('Mon, 10 Mar 2014 20:00:00 GMT');
+      expect(Requestr.cache.expires).toBe(1394481600000);
+      expect(window.dispatchEvent).toHaveBeenCalled();
+    });
+
+    it('should parse self property', function() {
+      spyOn(window, 'dispatchEvent');
+      spyOn(Requestr, 'loadPage');
+
+      Requestr.parseSerialization({textContent: '{"self": true}'});
+
+      expect(Requestr.serialization.self).toBe(true);
+      expect(window.dispatchEvent).toHaveBeenCalled();
+      expect(Requestr.loadPage).toHaveBeenCalledWith(window.location.href);
+    });
+
+    it('should parse owner property', function() {
+      spyOn(window, 'dispatchEvent');
+      spyOn(Requestr, 'loadPage');
+
+      Requestr.parseSerialization({textContent: '{"owner": "some.url"}'});
+
+      expect(Requestr.serialization.owner).toBe('some.url');
+      expect(window.dispatchEvent).toHaveBeenCalled();
+      expect(Requestr.loadPage).toHaveBeenCalledWith('some.url');
+    });
   });
 
   describe('Requestr.initLocalDb', function() {
+    beforeEach(function() {
+      Requestr.localDb = null;
+      window.indexedDB = null;
+      Requestr.browser.isSafari = false;
+    });
+    afterEach(function() {
+      Requestr.localDb = null;
+      window.indexedDB = null;
+      Requestr.browser.isSafari = false;
+    });
     it('should be defined', function() {
       expect(Requestr.initLocalDb).toBeDefined();
     });
-    // TODO (jam@): Add test!
+    // TODO (jam@): Find proper test spec for IndexedDb.
+    it('should create indexeddb database instance', function() {
+      var result, hackRequest = {}, callback = function(r) {result = r;};
+
+      window.indexedDB = {
+        open: function() {
+          return hackRequest;
+        }
+      };
+
+      Requestr.initLocalDb(1, callback);
+
+      hackRequest.result = {};
+      hackRequest.onsuccess(null);
+
+      expect(window.indexedDB).not.toBe(null);
+      expect(Requestr.localDb).not.toBe(null);
+      expect(result).toBe(true);
+    });
+    it('should not create indexeddb database instance', function() {
+      var result, hackRequest = {}, callback = function(r) {result = r;};
+
+      window.indexedDB = {
+        open: function() {
+          return hackRequest;
+        }
+      };
+
+      Requestr.initLocalDb(1, callback);
+
+      hackRequest.onerror({target: {errorCode: 'error'}});
+
+      expect(Requestr.localDb).toBe(null);
+      expect(result).toBe(false);
+    });
+    it('should fail, database not supported', function() {
+      var result, callback = function(r) {result = r;};
+      Requestr.initLocalDb(1, callback);
+
+      expect(window.indexedDB).toBe(null);
+      expect(Requestr.localDb).toBe(null);
+      expect(result).toBe(false);
+    });
+
+    it('should create webSQL database instance', function() {
+      Requestr.browser.isSafari = true;
+      window.indexedDB = null;
+
+      var result, done, callback = function(r) {done = true; result = r;};
+
+      Requestr.initLocalDb(1, callback);
+
+      waitsFor(function() {
+        return done;
+      }, '', 10000);
+
+      runs(function() {
+        expect(Requestr.localDbPolyfill).not.toBe(null);
+        expect(result).toBe(true);
+      });
+
+      Requestr.browser.isSafari = false;
+    });
+
+    it('should not create webSQL database instance', function() {
+      Requestr.browser.isSafari = true;
+      window.indexedDB = null;
+
+      var result, done, old = window.openDatabase,
+          callback = function(r) {done = true; result = r;};
+
+      window.openDatabase = function() {return null;};
+      Requestr.initLocalDb(1, callback);
+
+      waitsFor(function() {
+        return done;
+      }, '', 10000);
+
+      runs(function() {
+        expect(Requestr.localDbPolyfill).toBe(null);
+        expect(result).toBe(false);
+      });
+
+      Requestr.browser.isSafari = false;
+      window.openDatabase = old;
+    });
   });
 
   describe('Requestr.cache.update', function() {
+    beforeEach(function() {
+      Requestr.localDb = null;
+      Requestr.browser.isSafari = false;
+    });
+    afterEach(function() {
+      Requestr.localDb = null;
+      Requestr.browser.isSafari = false;
+      Requestr.localDbPolyfill = null;
+    });
     it('should be defined', function() {
       expect(Requestr.cache.update).toBeDefined();
     });
-    // TODO (jam@): Add test!
+    it('should be add resources via IndexedDb', function() {
+      var resources = [1, 2, 3];
+      Requestr.localDb = {};
+      spyOn(Requestr.cache, 'add');
+
+      Requestr.cache.update(resources);
+
+      expect(Requestr.cache.add).toHaveBeenCalledWith(resources, jasmine.any(Function), jasmine.any(Function));
+    });
+    it('should be add resources via webSQL', function() {
+      var resources = [1, 2, 3];
+      Requestr.browser.isSafari = true;
+      Requestr.localDbPolyfill = {};
+      spyOn(Requestr.cache.pollyfill.websql, 'add');
+
+      Requestr.cache.update(resources);
+
+      expect(Requestr.cache.pollyfill.websql.add).toHaveBeenCalledWith(resources, jasmine.any(Function), jasmine.any(Function));
+    });
   });
 
   describe('Requestr.cache.pollyfill.websql.add', function() {
+    var resources, success, error, done;
+
+    beforeEach(function() {
+      Requestr.localDbPolyfill = {};
+    });
+
+    afterEach(function() {
+      resources = success = error = null;
+    });
+
     it('should be defined', function() {
       expect(Requestr.cache.pollyfill.websql.add).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should add resources to cache (websql polyfill)', function() {
+      resources = [{
+        url: '',
+        token: '',
+        mimeType: '',
+        dataType: '',
+        data: '',
+        date: ''
+      }];
+
+      Requestr.localDbPolyfill.transaction = function(func) {
+        func({executeSql: function(p1, p2, s, e) {
+          s();
+          done = true;
+        }});
+      };
+
+      waitsFor(function() {
+        return done;
+      }, '', 10000);
+
+      runs(function() {
+        expect(success).toBe(true);
+        expect(error).toBe(null);
+      });
+
+      Requestr.cache.pollyfill.websql.add(resources, function() {
+        success = true;
+      }, function(e) {
+        error = true;
+      });
+    });
   });
 
   describe('Requestr.cache.add', function() {
+    var resources, success, error, done, request, transaction;
+
+    beforeEach(function() {
+      Requestr.localDb = {};
+    });
+
+    afterEach(function() {
+      resources = success = error = null;
+      Requestr.localDb = null;
+    });
+
     it('should be defined', function() {
       expect(Requestr.cache.add).toBeDefined();
     });
-    // TODO (jam@): Add test!
+
+    it('should add resources to cache (indexeddb)', function() {
+      resources = [{
+        url: 'http://tradeshift.com',
+        token: '',
+        mimeType: '',
+        dataType: '',
+        data: '',
+        date: ''
+      }];
+
+      Requestr.localDb.transaction = function(p1, p2) {
+        return transaction = {
+          objectStore: function(p) {
+            return {put: function(pp) {
+              return request = {};
+            }};
+          }
+        };
+      };
+
+      Requestr.cache.add(resources,
+      function() {
+        success = true;
+      },
+      function(e) {
+        error = true;
+      });
+
+      request.onsuccess({target: {result: 'xxx'}});
+      transaction.oncomplete();
+      expect(success).toBe(true);
+      expect(error).toBe(null);
+
+    });
+
+    it('should not add resources to cache (indexeddb) due to error', function() {
+      resources = [{
+        url: 'http://tradeshift.com',
+        token: '',
+        mimeType: '',
+        dataType: '',
+        data: '',
+        date: ''
+      }];
+
+      Requestr.localDb.transaction = function(p1, p2) {
+        return transaction = {
+          objectStore: function(p) {
+            return {put: function(pp) {
+              return request = {};
+            }};
+          }
+        };
+      };
+
+      Requestr.cache.add(resources,
+      function() {
+        success = true;
+      },
+      function(e) {
+        error = true;
+      });
+
+      request.onerror({target: {error: {message: 'xxx'}}});
+      transaction.onerror();
+      expect(success).toBe(null);
+      expect(error).toBe(true);
+
+    });
   });
 
   describe('Requestr.cache.pollyfill.websql.read', function() {
