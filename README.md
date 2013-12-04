@@ -5,6 +5,7 @@ Requestr wants to fix the latency issue created by the waterfall approach of loa
 
 The benefit of combining the network requests is that the browser is only attempting to fetch a single request, which cuts down the latency of the waterfall, while also moving the network request to a single thread, which speeds up the available computing power available to the window while loading these network requests.
 
+
 Under the Hood
 --------------
 
@@ -17,6 +18,25 @@ Using Requestr
 --------------
 
 Details
+
+
+Development Environment
+-----------------------
+
+If you would like to contribute or setup Requestr for local development, you will need to do the following:
+
+1. Install `Node.js`, follow instructions on http://nodejs.org
+2. Install `Grunt`, follow instructions on http://gruntjs.com/getting-started
+3. Install the `Closure Linter`, follow instructions on https://developers.google.com/closure/utilities/docs/linter_howto
+
+Once `Grunt` and the `Closure Linter` are installed:
+
+3. Go into the main directory and run `npm install`
+4. Once everything is installed, run `grunt githooks` and then run `grunt`
+
+That's it, you will have the entire project built and ready for local development.
+
+Requestr uses a `pre-commit` hook that runs the `default` task. This means that in order to commit your changes must pass both jasmine tests and jshint.
 
 
 Supported Browsers
@@ -48,4 +68,4 @@ If you encounter any issues, please report them here on Github, we will gladly t
 Credits
 -------
 
-Details
+Requestr was developed at [Tradeshift](http://tradeshift.com) by José Antonio Márquez Russo ([@joseeight](https://twitter.com/joseeight)) with the help of Joakim Recht ([@joakimrecht](https://twitter.com/joakimrecht)), Joseph McCarthy ([@jmccarthy14](https://twitter.com/jmccarthy14)), and many other awesome [Tradeshifters](https://github.com/Tradeshift?tab=members).
