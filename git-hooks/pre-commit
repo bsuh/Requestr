@@ -1,5 +1,0 @@
-#!/bin/sh
-#
-# Pre-commit hooks
-
-grunt

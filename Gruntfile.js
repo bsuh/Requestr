@@ -26,9 +26,6 @@ module.exports = function(grunt) {
           stdout: true
         },
         command: 'gjslint lib/requestr.js specs/requestr_test.js'
-      },
-      hooks: {
-        command: 'cp git-hooks/pre-commit .git/hooks/'
       }
     },
     uglify: {
