@@ -25,6 +25,7 @@ describe('Requestr', function() {
     expect(Requestr.SERIALIZATION_QUERY).toBe(
         'script[type="text/requestr-serialization"]');
     expect(Requestr.JS_ELEMENT_ATTRIBUTE).toBe('data-requestr-js');
+    expect(Requestr.ORIGINAL_URL_ATTRIBUTE).toBe('data-requestr-url');
     expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(40000);
 
     expect(Requestr.serialization).toBe(null);
@@ -1247,7 +1248,9 @@ describe('Requestr', function() {
           {Url: 'http://tradeshift.com/img.png'}, dimp, []);
 
       expect(Requestr.createUrlFromResource).toHaveBeenCalled();
-      expect(dimp.body.innerHTML).toBe('<img src="blob://url">');
+      expect(dimp.body.innerHTML).toBe('<img src="blob://url" ' +
+          Requestr.ORIGINAL_URL_ATTRIBUTE +
+          '="http://tradeshift.com/img.png">');
     });
 
     it('should replace url in style element', function() {
