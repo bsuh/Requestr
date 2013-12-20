@@ -1,5 +1,7 @@
 /* Globals exposed by Jasmine*/
-/* global jasmine, isCommonJS, exports, spyOn, it, xit, expect, runs, waits, waitsFor, beforeEach, afterEach, describe, xdescribe */
+/* global jasmine, isCommonJS, exports, spyOn, it,
+xit, expect, runs, waits, waitsFor, beforeEach,
+afterEach, describe, xdescribe */
 
 /* Gobals exposed by Reqestr */
 /* global Requestr */
@@ -18,8 +20,10 @@ describe('Requestr', function() {
   it('should check for initialization', function() {
 
     expect(Requestr.LOADING_CLASS).toBe('requestr');
-    expect(Requestr.ELEMENTS_QUERY).toBe('[rel~="stylesheet"][href], [rel~="icon"][href], [src]');
-    expect(Requestr.SERIALIZATION_QUERY).toBe('script[type="text/requestr-serialization"]');
+    expect(Requestr.ELEMENTS_QUERY).toBe(
+        '[rel~="stylesheet"][href], [rel~="icon"][href], [src]');
+    expect(Requestr.SERIALIZATION_QUERY).toBe(
+        'script[type="text/requestr-serialization"]');
     expect(Requestr.JS_ELEMENT_ATTRIBUTE).toBe('data-requestr-js');
     expect(Requestr.DEFAULT_SERVICE_FILE_MAX_SIZE).toBe(40000);
 
@@ -41,22 +45,38 @@ describe('Requestr', function() {
 
     expect(Requestr.customEvents).toBeDefined();
     expect(Requestr.customEvents.REQUESTR_READY).toBe('requestrReady');
-    expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe('documentLoadStart');
-    expect(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS).toBe('documentLoadProgress');
-    expect(Requestr.customEvents.DOCUMENT_LOAD_ERROR).toBe('documentLoadError');
-    expect(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE).toBe('documentLoadComplete');
-    expect(Requestr.customEvents.DOCUMENT_RENDERED).toBe('documentRendered');
-    expect(Requestr.customEvents.DOCUMENT_BLOB_URL_CREATED).toBe('documentBlobUrlCreated');
-    expect(Requestr.customEvents.RESOURCE_API_ERROR).toBe('resourceApiError');
-    expect(Requestr.customEvents.RESOURCE_LOAD_START).toBe('resourceLoadStart');
-    expect(Requestr.customEvents.RESOURCE_LOAD_PROGRESS).toBe('resourceLoadProgress');
-    expect(Requestr.customEvents.RESOURCE_LOAD_ERROR).toBe('resourceLoadError');
-    expect(Requestr.customEvents.RESOURCE_LOAD_COMPLETE).toBe('resourceLoadComplete');
-    expect(Requestr.customEvents.RESOURCE_RESOLVING).toBe('resourceResolving');
-    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_START).toBe('externalCssLoadStart');
-    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe('externalCssLoadComplete');
-    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe('externalCssLoadProgress');
-    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe('externalCssLoadError');
+    expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe(
+        'documentLoadStart');
+    expect(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS).toBe(
+        'documentLoadProgress');
+    expect(Requestr.customEvents.DOCUMENT_LOAD_ERROR).toBe(
+        'documentLoadError');
+    expect(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE).toBe(
+        'documentLoadComplete');
+    expect(Requestr.customEvents.DOCUMENT_RENDERED).toBe(
+        'documentRendered');
+    expect(Requestr.customEvents.DOCUMENT_BLOB_URL_CREATED).toBe(
+        'documentBlobUrlCreated');
+    expect(Requestr.customEvents.RESOURCE_API_ERROR).toBe(
+        'resourceApiError');
+    expect(Requestr.customEvents.RESOURCE_LOAD_START).toBe(
+        'resourceLoadStart');
+    expect(Requestr.customEvents.RESOURCE_LOAD_PROGRESS).toBe(
+        'resourceLoadProgress');
+    expect(Requestr.customEvents.RESOURCE_LOAD_ERROR).toBe(
+        'resourceLoadError');
+    expect(Requestr.customEvents.RESOURCE_LOAD_COMPLETE).toBe(
+        'resourceLoadComplete');
+    expect(Requestr.customEvents.RESOURCE_RESOLVING).toBe(
+        'resourceResolving');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_START).toBe(
+        'externalCssLoadStart');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe(
+        'externalCssLoadComplete');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe(
+        'externalCssLoadProgress');
+    expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe(
+        'externalCssLoadError');
 
     expect(Requestr.CACHING_DB_NAME).toBe('Requestr');
     expect(Requestr.CACHING_DB_STORE_NAME).toBe('datauris');
@@ -150,9 +170,11 @@ describe('Requestr', function() {
     it('should parse expires property', function() {
       spyOn(window, 'dispatchEvent');
 
-      Requestr.parseSerialization({textContent: '{"expires": "Mon, 10 Mar 2014 20:00:00 GMT"}'});
+      Requestr.parseSerialization({textContent:
+          '{"expires": "Mon, 10 Mar 2014 20:00:00 GMT"}'});
 
-      expect(Requestr.serialization.expires).toBe('Mon, 10 Mar 2014 20:00:00 GMT');
+      expect(Requestr.serialization.expires).toBe(
+          'Mon, 10 Mar 2014 20:00:00 GMT');
       expect(Requestr.cache.expires).toBe(1394481600000);
       expect(window.dispatchEvent).toHaveBeenCalled();
     });
@@ -302,7 +324,8 @@ describe('Requestr', function() {
 
       Requestr.cache.update(resources);
 
-      expect(Requestr.cache.add).toHaveBeenCalledWith(resources, jasmine.any(Function), jasmine.any(Function));
+      expect(Requestr.cache.add).toHaveBeenCalledWith(
+          resources, jasmine.any(Function), jasmine.any(Function));
     });
     it('should be add resources via webSQL', function() {
       var resources = [1, 2, 3];
@@ -312,7 +335,8 @@ describe('Requestr', function() {
 
       Requestr.cache.update(resources);
 
-      expect(Requestr.cache.pollyfill.websql.add).toHaveBeenCalledWith(resources, jasmine.any(Function), jasmine.any(Function));
+      expect(Requestr.cache.pollyfill.websql.add).toHaveBeenCalledWith(
+          resources, jasmine.any(Function), jasmine.any(Function));
     });
   });
 
@@ -417,7 +441,8 @@ describe('Requestr', function() {
 
     });
 
-    it('should not add resources to cache (indexeddb) due to error', function() {
+    it('should not add resources to cache (indexeddb) due to error',
+        function() {
       resources = [{
         url: 'http://tradeshift.com',
         token: '',
@@ -477,7 +502,8 @@ describe('Requestr', function() {
         }});
       };
 
-      Requestr.cache.pollyfill.websql.read(requests, function(r) {success = true;});
+      Requestr.cache.pollyfill.websql.read(requests,
+          function(r) {success = true;});
 
       expect(success).toBe(true);
     });
@@ -490,7 +516,12 @@ describe('Requestr', function() {
       Requestr.localDbPolyfill = {};
       Requestr.browser.isSafari = false;
       Requestr.localDb = {
-        transaction: function() {return {objectStore: function() {return {get: function(url) {return request;}};}};},
+        transaction: function() {
+          return {objectStore: function() {
+              return {get: function(url) {return request;}};
+            }
+          };
+        },
         objectStoreNames: {length: 1}
       };
     });
@@ -559,7 +590,8 @@ describe('Requestr', function() {
 
       Requestr.cache.clear();
 
-      expect(window.indexedDB.deleteDatabase).toHaveBeenCalledWith(Requestr.CACHING_DB_NAME);
+      expect(window.indexedDB.deleteDatabase).toHaveBeenCalledWith(
+          Requestr.CACHING_DB_NAME);
     });
 
     it('should clear websql cache', function() {
@@ -570,7 +602,8 @@ describe('Requestr', function() {
 
       Requestr.cache.clear();
 
-      expect(Requestr.localDbPolyfill.transaction).toHaveBeenCalledWith(jasmine.any(Function));
+      expect(Requestr.localDbPolyfill.transaction).toHaveBeenCalledWith(
+          jasmine.any(Function));
     });
   });
 
@@ -580,13 +613,18 @@ describe('Requestr', function() {
     });
 
     it('should parse fragment', function() {
-      var result, source = 'http://tradeshift.com', html = '<p>tradeshift</p>';
+      var result, source = 'http://tradeshift.com',
+          html = '<p>tradeshift</p>';
 
       spyOn(Requestr, 'parsePage').andCallThrough();
 
       Requestr.loadFragment(source, html, function(r) {result = r;});
 
-      expect(Requestr.parsePage).toHaveBeenCalledWith({originUrl: source, target: jasmine.any(Object)}, jasmine.any(Function), null, null, true);
+      expect(Requestr.parsePage).toHaveBeenCalledWith({
+          originUrl: source,
+          target: jasmine.any(Object)
+        },
+        jasmine.any(Function), null, null, true);
       expect(typeof result).toBe('string');
       expect(result).toBe('<p>tradeshift</p>');
     });
@@ -611,10 +649,13 @@ describe('Requestr', function() {
       url.setAttribute('href', 'some.html');
       url = url.href;
 
-      expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
+      expect(document.documentElement.classList.contains(
+          Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
-      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(Requestr.service,
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_START);
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
+          Requestr.service,
         [{
           Url: url,
           Document: true,
@@ -640,10 +681,13 @@ describe('Requestr', function() {
       url.setAttribute('href', 'some.html');
       url = url.href;
 
-      expect(document.documentElement.classList.contains(Requestr.LOADING_CLASS)).toBe(true);
+      expect(document.documentElement.classList.contains(
+          Requestr.LOADING_CLASS)).toBe(true);
       expect(Requestr.stopWindow).not.toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_START);
-      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(Requestr.service,
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_START);
+      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
+          Requestr.service,
         [{
           Url: url,
           Document: true,
@@ -669,7 +713,14 @@ describe('Requestr', function() {
       var progress = {totalSize: 100, loaded: 50};
       Requestr.pageLoadProgress(progress);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {progress: Math.round(progress.loaded / progress.totalSize * 100), bytes: 50, total: 100});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {
+          progress:
+                Math.round(progress.loaded / progress.totalSize * 100),
+          bytes: 50,
+          total: 100
+        }
+      );
     });
   });
 
@@ -684,7 +735,8 @@ describe('Requestr', function() {
       var error = {some: 'test'};
       Requestr.pageLoadError(error);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: error});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: error});
     });
   });
 
@@ -699,11 +751,13 @@ describe('Requestr', function() {
       var abort = {some: 'test'};
       Requestr.pageLoadError(abort);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: abort});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_ERROR, {error: abort});
     });
   });
 
-  // TODO (jam@): Address missing tests. Update test due to changes (callback, expires, mutator, fragment).
+  // TODO (jam@): Address missing tests. Update test due to changes
+  // (callback, expires, mutator, fragment).
   describe('Requestr.parsePage', function() {
     beforeEach(function() {
       delete Requestr.service;
@@ -718,7 +772,8 @@ describe('Requestr', function() {
 
     it('should attempt to parse the document', function() {
       var doc = window.document.implementation.createHTMLDocument(''),
-          html = '<img src="http://blog.intuit.co.uk/wp-content/uploads/2013/01/tradeshift_logo_blue.jpg" />';
+          html = '<img src="http://blog.intuit.co.uk/wp-content/uploads' +
+              '/2013/01/tradeshift_logo_blue.jpg" />';
 
       spyOn(Requestr, 'dispatchCustomEvent');
       spyOn(Requestr, 'requestDataUriFromService');
@@ -727,13 +782,17 @@ describe('Requestr', function() {
       Requestr.service = 'http://some.domain.com/my/api/url';
       Requestr.parsePage({target: {response: doc}});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_COMPLETE);
       expect(Requestr.ownerDocument).toBe(doc);
       // TODO (jam@): Add checks to elements to be matched.
       expect(doc.head.getElementsByTagName('base').length).toBe(1);
-      // TODO (jam@): Add checks to make sure Requestr elements are removed.
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_START);
-      // TODO (jam@): Add checks to ensure the XHR is made with the proper data.
+      // TODO (jam@): Add checks to make sure Requestr
+      // elements are removed.
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+      Requestr.customEvents.RESOURCE_LOAD_START);
+      // TODO (jam@): Add checks to ensure the XHR is made with
+      // the proper data.
       expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
     });
   });
@@ -770,7 +829,8 @@ describe('Requestr', function() {
 
       spyOn(Requestr.cache, 'read').andCallThrough();
 
-      Requestr.requestDataUriFromService('ghghg', [], {load: function(r) {result = r;}}, function(r) {});
+      Requestr.requestDataUriFromService('ghghg', [],
+          {load: function(r) {result = r;}}, function(r) {});
 
       expect(Requestr.xhr.blobUrlCallback).toBeDefined();
       expect(Requestr.cache.read).toHaveBeenCalled();
@@ -798,7 +858,8 @@ describe('Requestr', function() {
     });
 
     it('should parse rules and return valid string', function() {
-      var test = Requestr.getParsedCssFromRules([{cssText: 'test'}, {cssText: ' testing'}]);
+      var test = Requestr.getParsedCssFromRules([{cssText: 'test'},
+          {cssText: ' testing'}]);
 
       expect(typeof test).toBe('string');
       expect(test).toBe('test testing');
@@ -821,14 +882,19 @@ describe('Requestr', function() {
 
       Requestr.removeResponseLoadXhrListener();
 
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('load', Requestr.handleResponseResources, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('progress', Requestr.handleResponseResourcesProgress, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('error', Requestr.handleResponseResourcesError, true);
-      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith('abort', Requestr.handleResponseResourcesAbort, true);
+      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith(
+          'load', Requestr.handleResponseResources, true);
+      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith(
+          'progress', Requestr.handleResponseResourcesProgress, true);
+      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith(
+          'error', Requestr.handleResponseResourcesError, true);
+      expect(Requestr.xhr.removeEventListener).toHaveBeenCalledWith(
+          'abort', Requestr.handleResponseResourcesAbort, true);
     });
   });
 
-  // TODO (jam@): Add missing tests when finalized. Update test due to changes.
+  // TODO (jam@): Add missing tests when finalized. Update test
+  // due to changes.
   describe('Requestr.handleResponseResources', function() {
     it('should be defined', function() {
       expect(Requestr.handleResponseResources).toBeDefined();
@@ -840,7 +906,8 @@ describe('Requestr', function() {
       delete Requestr.xhr;
     });
 
-    it('should not do any resolving since no resources returned from service', function() {
+    it('should not do any resolving since no resources returned from ' +
+        'service', function() {
       spyOn(Requestr, 'dispatchCustomEvent');
       spyOn(Requestr, 'dataURItoBlob');
       spyOn(Requestr, 'setDocumentHtml');
@@ -850,10 +917,13 @@ describe('Requestr', function() {
       Requestr.xhr = {};
       Requestr.handleResponseResources({target: {response: {}}});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_COMPLETE);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_LOAD_COMPLETE);
       expect(Requestr.removeResponseLoadXhrListener).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_API_ERROR);
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_RESOLVING);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_API_ERROR);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_RESOLVING);
       expect(Requestr.dataURItoBlob).not.toHaveBeenCalled();
       expect(Requestr.setDocumentHtml).toHaveBeenCalled();
     });
@@ -870,7 +940,9 @@ describe('Requestr', function() {
       var progress = {loaded: 77};
       Requestr.handleResponseResourcesProgress(progress);
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_PROGRESS, {bytes: Math.round(progress.loaded)});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_LOAD_PROGRESS,
+              {bytes: Math.round(progress.loaded)});
     });
   });
 
@@ -887,7 +959,8 @@ describe('Requestr', function() {
       Requestr.handleResponseResourcesAbort(abort);
 
       expect(Requestr.removeResponseLoadXhrListener).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_ERROR, {error: abort});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_LOAD_ERROR, {error: abort});
     });
   });
 
@@ -905,7 +978,8 @@ describe('Requestr', function() {
       Requestr.handleResponseResourcesError(error);
 
       expect(Requestr.removeResponseLoadXhrListener).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.RESOURCE_LOAD_ERROR, {error: error});
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.RESOURCE_LOAD_ERROR, {error: error});
       expect(Requestr.setDocumentHtml).toHaveBeenCalled();
     });
   });
@@ -923,7 +997,8 @@ describe('Requestr', function() {
 
       Requestr.completeResolvingDocument(dimp, owner);
 
-      expect(Requestr.setDocumentHtml).toHaveBeenCalledWith(owner, dimp.documentElement.outerHTML);
+      expect(Requestr.setDocumentHtml).toHaveBeenCalledWith(
+          owner, dimp.documentElement.outerHTML);
       expect(Requestr.cache.update).toHaveBeenCalled();
     });
 
@@ -943,24 +1018,29 @@ describe('Requestr', function() {
       expect(Requestr.loadExternalCssUrls).toBeDefined();
     });
 
-    it('should resolve document with no additional urls to parse', function() {
+    it('should resolve document with no additional urls to parse',
+        function() {
       spyOn(Requestr, 'resolveDocumentCssUrls');
       spyOn(Requestr, 'dispatchCustomEvent');
 
       Requestr.loadExternalCssUrls([], [], null, {}, []);
 
       expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).not.toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+      expect(Requestr.dispatchCustomEvent).not.toHaveBeenCalledWith(
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
     });
 
-    it('should parse additional urls before resolving document', function() {
+    it('should parse additional urls before resolving document',
+        function() {
       spyOn(Requestr, 'requestDataUriFromService');
       spyOn(Requestr, 'dispatchCustomEvent');
 
-      Requestr.loadExternalCssUrls(['http://tradeshift.com'], [], null, {}, []);
+      Requestr.loadExternalCssUrls(
+          ['http://tradeshift.com'], [], null, {}, []);
 
       expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
     });
   });
 
@@ -1003,24 +1083,31 @@ describe('Requestr', function() {
       expect(Requestr.handleDocumentCssUris).toBeDefined();
     });
 
-    it('should attempt to resolve document with no additional external css to parse', function() {
+    it('should attempt to resolve document with no additional ' +
+        'external css to parse', function() {
       spyOn(Requestr, 'dispatchCustomEvent');
       spyOn(Requestr, 'resolveDocumentCssUrls');
 
-      Requestr.handleDocumentCssUris({target: {response: {}}}, [], {}, [], function() {});
+      Requestr.handleDocumentCssUris(
+          {target: {response: {}}}, [], {}, [], function() {});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
       expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
     });
 
-    it('should attempt to resolve document with no additional urls in external css to parse', function() {
+    it('should attempt to resolve document with no additional urls in ' +
+        'external css to parse', function() {
       spyOn(Requestr, 'dispatchCustomEvent');
       spyOn(Requestr, 'resolveDocumentCssUrls');
       spyOn(Requestr, 'createUrlFromResource');
 
-      Requestr.handleDocumentCssUris({target: {response: {Resources: [{Url: 'http://tradeshift.com'}]}}}, [], {}, [], function() {});
+      Requestr.handleDocumentCssUris(
+          {target: {response: {Resources: [{Url:
+              'http://tradeshift.com'}]}}}, [], {}, [], function() {});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
       expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
       expect(Requestr.createUrlFromResource).toHaveBeenCalled();
     });
@@ -1034,7 +1121,8 @@ describe('Requestr', function() {
     it('should make callback with no urls to resolve', function() {
       var success;
 
-      Requestr.resolveDocumentCssUrls([], {}, [], function() {success = true;});
+      Requestr.resolveDocumentCssUrls([], {}, [],
+          function() {success = true;});
 
       expect(Requestr.resolveDocumentCssUrls).toBeDefined();
       expect(success).toBe(true);
@@ -1045,7 +1133,8 @@ describe('Requestr', function() {
 
       spyOn(Requestr, 'replaceDocumentUrlsWithBlob');
 
-      Requestr.resolveDocumentCssUrls([{Data: 'hello'}], {}, [], function() {success = true;});
+      Requestr.resolveDocumentCssUrls([{Data: 'hello'}], {}, [],
+          function() {success = true;});
 
       expect(Requestr.resolveDocumentCssUrls).toBeDefined();
       expect(Requestr.replaceDocumentUrlsWithBlob).toHaveBeenCalled();
@@ -1082,16 +1171,19 @@ describe('Requestr', function() {
     it('should not find match', function() {
       spyOn(Requestr, 'getMatchingObjectWithUrl').andReturn(null);
 
-      var test = Requestr.matchResourceWithCache([], 'http://tradeshift.com');
+      var test = Requestr.matchResourceWithCache([],
+          'http://tradeshift.com');
 
       expect(test).toBe(false);
       expect(Requestr.getMatchingObjectWithUrl).toHaveBeenCalled();
     });
 
     it('should find match', function() {
-      spyOn(Requestr, 'getMatchingObjectWithUrl').andReturn({dataType: '', data: '', mimeType: ''});
+      spyOn(Requestr, 'getMatchingObjectWithUrl').andReturn(
+          {dataType: '', data: '', mimeType: ''});
 
-      var test = Requestr.matchResourceWithCache([], 'http://tradeshift.com');
+      var test = Requestr.matchResourceWithCache([],
+          'http://tradeshift.com');
 
       expect(test).toBe(true);
       expect(Requestr.getMatchingObjectWithUrl).toHaveBeenCalled();
@@ -1151,7 +1243,8 @@ describe('Requestr', function() {
 
       spyOn(Requestr, 'createUrlFromResource').andReturn('blob://url');
 
-      Requestr.replaceDocumentUrlsWithBlob({Url: 'http://tradeshift.com/img.png'}, dimp, []);
+      Requestr.replaceDocumentUrlsWithBlob(
+          {Url: 'http://tradeshift.com/img.png'}, dimp, []);
 
       expect(Requestr.createUrlFromResource).toHaveBeenCalled();
       expect(dimp.body.innerHTML).toBe('<img src="blob://url">');
@@ -1159,11 +1252,13 @@ describe('Requestr', function() {
 
     it('should replace url in style element', function() {
       var dimp = window.document.implementation.createHTMLDocument(''),
-          css = {innerText: 'rule {background: url(http://tradeshift.com/img.png)}'};
+          css = {innerText:
+          'rule {background: url(http://tradeshift.com/img.png)}'};
 
       spyOn(Requestr, 'createUrlFromResource').andReturn('blob://url');
 
-      Requestr.replaceDocumentUrlsWithBlob({Url: 'http://tradeshift.com/img.png'}, dimp, [css]);
+      Requestr.replaceDocumentUrlsWithBlob(
+          {Url: 'http://tradeshift.com/img.png'}, dimp, [css]);
 
       expect(Requestr.createUrlFromResource).toHaveBeenCalled();
       expect(css.innerText).toBe('rule {background: url(blob://url)}');
@@ -1180,7 +1275,9 @@ describe('Requestr', function() {
       spyOn(window, 'Uint8Array');
       spyOn(window, 'Blob');
 
-      var test, uri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg';
+      var test, uri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA' +
+          'UAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNB' +
+          'AAO9TXL0Y4OHwAAAABJRU5ErkJggg';
       test = Requestr.dataURItoBlob(uri);
 
       expect(window.Blob).toHaveBeenCalled();
@@ -1198,7 +1295,8 @@ describe('Requestr', function() {
 
       var test = Requestr.dataStringToBlob('data', 'mime');
 
-      expect(Requestr.dataURItoBlob).toHaveBeenCalledWith('data:mime;base64,ZGF0YQ==', 'mime');
+      expect(Requestr.dataURItoBlob).toHaveBeenCalledWith(
+      'data:mime;base64,ZGF0YQ==', 'mime');
     });
   });
 
@@ -1218,7 +1316,8 @@ describe('Requestr', function() {
 
       expect(window.dispatchEvent).toHaveBeenCalled();
       expect(document.body.innerHTML).toBe('hi');
-      expect(document.documentElement.getAttribute('data-test')).toBe('works');
+      expect(document.documentElement.getAttribute(
+          'data-test')).toBe('works');
     });
   });
 
@@ -1238,7 +1337,8 @@ describe('Requestr', function() {
 
       Requestr.createDocumentBlobUrl(doc, doc, test.callback);
 
-      expect(test.callback).toHaveBeenCalledWith({url: undefined, html: doc.documentElement.outerHTML});
+      expect(test.callback).toHaveBeenCalledWith(
+          {url: undefined, html: doc.documentElement.outerHTML});
     });
   });
 
@@ -1303,13 +1403,15 @@ describe('Requestr', function() {
       expect(Requestr.parseSerialization).toHaveBeenCalledWith(ser);
     });
 
-    it('should wait for document loaded before parsing serialization', function() {
+    it('should wait for document loaded before parsing serialization',
+        function() {
       spyOn(Requestr, 'parseSerialization');
       spyOn(window, 'addEventListener');
 
       Requestr.init();
 
-      expect(window.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', jasmine.any(Function));
+      expect(window.addEventListener).toHaveBeenCalledWith(
+          'DOMContentLoaded', jasmine.any(Function));
       expect(Requestr.parseSerialization).not.toHaveBeenCalled();
     });
   });
