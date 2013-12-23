@@ -1,16 +1,34 @@
 {
   "name": "Requestr",
   "author": "José Antonio Márquez Russo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "HTTP request minimizer.",
   "main": "lib/requestr.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Tradeshift/Requestr"
   },
+  "maintainers": [
+    {
+      "name": "José Antonio Márquez Russo",
+      "email": "jam@tradeshift.com",
+      "web": "https://twitter.com/joseeight"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "José Antonio Márquez Russo",
+      "email": "jam@tradeshift.com",
+      "web": "https://twitter.com/joseeight"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/Tradeshift/Requestr/issues"
   },
+  "licenses": [{
+    "type": "GPLv3",
+    "url": "http://www.gnu.org/licenses/gpl-3.0.txt"
+  }],
   "devDependencies": {
     "grunt": "~0.4.0",
     "grunt-contrib": "~0.7.0",
@@ -19,6 +37,7 @@
     "grunt-closure-tools": "~0.8.3",
     "grunt-shell": "~0.4.0",
     "grunt-contrib-uglify": "~0.2.4",
-    "grunt-githooks": "~0.3.0"
+    "grunt-githooks": "~0.3.0",
+    "grunt-contrib-concat": "~0.3.0"
   }
 }
