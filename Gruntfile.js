@@ -55,6 +55,17 @@ module.exports = function(grunt) {
       all: {
         'pre-commit': 'default'
       }
+    },
+    
+    // Adding license to minified file.
+    concat: {
+      options: {
+        separator: ''
+      },
+      dist: {
+        src: ['header.txt', 'lib/requestr.min.js'],
+        dest: 'lib/requestr.min.js'
+      }
     }
   });
 
@@ -63,6 +74,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-githooks');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('default', ['shell', 'jshint', 'jasmine', 'uglify']);
+  grunt.registerTask('default', ['shell', 'jshint', 'jasmine', 'uglify', 'concat']);
 };
