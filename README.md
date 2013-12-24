@@ -65,6 +65,12 @@ Requestr is still in "alpha" mode, so there will with no doubt be many issues we
 If you encounter any issues, please report them here on Github, we will gladly take any feedback in an effort to improve Requestr. And as always, feel free to fork and send us a pull-request with any features, fixes, and/or improvements!
 
 
+License
+-------
+
+Tradeshift provides its Requestr front-end application programming interface ("API") under a licensing model designed to meet the development and distribution needs of both commercial entities and open source projects. Entities who do not wish to distribute the source code for the Requestr front-end API under version 3 of the GNU General Public License (the "GPL") may enter into a commercial license agreement with Tradeshift. Please contact [jam@tradeshift.com](mailto:jam@tradeshift.com) for details. For developers of Free Open Source Software ("FOSS") applications under the GPL that want to combine and distribute those FOSS applications with the Requestr front-end API, Tradeshift’s open source software licensed under the GPL may be the best option.
+
+
 Credits
 -------
 
