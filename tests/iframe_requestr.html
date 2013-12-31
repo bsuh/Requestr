@@ -58,6 +58,9 @@
               } else if (type === Requestr.customEvents.EXTERNAL_CSS_LOAD_START) {
                 // External CSS embedded resources loading starts.
                 prgrs.innerHTML = 'loading embedded resources...';
+              } else if (type === Requestr.customEvents.REQUESTR_ERROR) {
+                console.log('Requestr Error:');
+                console.dir(e);
               }
             };
             // Loading the document, can do cross-domain as well.
@@ -76,7 +79,8 @@
                 "maxFileSize": 200000,
                 "allow": ["http://requestr:8488", "http://static.bbci.co.uk", "http://node1.bbcimg.co.uk"],
                 "exclude": ["http://fonts.googleapis.com", "http://requestr:8488/tests/data/img/bing.png"],
-                "expires": "Mon, 10 Mar 2014 20:00:00 GMT"
+                "expires": "Mon, 10 Mar 2014 20:00:00 GMT",
+                "development": true
             }
         </script>     
         <!--
