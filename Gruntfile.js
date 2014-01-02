@@ -88,7 +88,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-githooks');
-  grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.registerTask('default', ['shell', 'jshint', 'jasmine', 'uglify']);
 };
