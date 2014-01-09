@@ -272,7 +272,7 @@ describe('Requestr', function() {
     });
   });
 
-  describe('Requestr.initLocalDb', function() {
+  describe('Requestr.openLocalDb', function() {
     beforeEach(function() {
       Requestr.localDb = null;
       window.indexedDB = null;
@@ -286,7 +286,7 @@ describe('Requestr', function() {
     });
 
     it('should be defined', function() {
-      expect(Requestr.initLocalDb).toBeDefined();
+      expect(Requestr.openLocalDb).toBeDefined();
     });
 
     // TODO (jam@): Find proper test spec for IndexedDb.
@@ -299,7 +299,7 @@ describe('Requestr', function() {
         }
       };
 
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
 
       hackRequest.result = {};
       hackRequest.onsuccess(null);
@@ -320,7 +320,7 @@ describe('Requestr', function() {
         }
       };
 
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
       hackRequest.onerror({test: true});
 
       expect(Requestr.localDb).toBe(null);
@@ -340,7 +340,7 @@ describe('Requestr', function() {
         }
       };
 
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
 
       hackRequest.onerror({target: {errorCode: 'error'}});
 
@@ -350,7 +350,7 @@ describe('Requestr', function() {
 
     it('should fail, database not supported', function() {
       var result, callback = function(r) {result = r;};
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
 
       expect(window.indexedDB).toBe(null);
       expect(Requestr.localDb).toBe(null);
@@ -363,7 +363,7 @@ describe('Requestr', function() {
 
       var result, done, callback = function(r) {done = true; result = r;};
 
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
 
       waitsFor(function() {
         return done;
@@ -385,7 +385,7 @@ describe('Requestr', function() {
           callback = function(r) {done = true; result = r;};
 
       window.openDatabase = function() {return null;};
-      Requestr.initLocalDb(1, callback);
+      Requestr.openLocalDb(1, callback);
 
       waitsFor(function() {
         return done;
@@ -406,13 +406,54 @@ describe('Requestr', function() {
       Requestr.browser.isSafari = false;
       window.indexedDB = null;
 
-      Requestr.initLocalDb(1, function() {});
+      Requestr.openLocalDb(1, function() {});
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
         Requestr.customErrors.CACHING,
         jasmine.any(String)
       );
     });
+  });
+
+  describe('Requestr.closeLocalDb', function() {
+
+    beforeEach(function() {
+      Requestr.localDb = {close: function() {}};
+    });
+
+    afterEach(function() {
+      Requestr.localDb = null;
+    });
+
+    it('should be defined', function() {
+      expect(Requestr.closeLocalDb).toBeDefined();
+    });
+
+    it('should close indexedDB', function() {
+      var works;
+
+      spyOn(Requestr.localDb, 'close').andCallFake(function() {
+        works = true;
+      });
+
+      Requestr.closeLocalDb();
+
+      expect(works).toBe(true);
+    });
+
+    it('should not attempt to close indexedDB', function() {
+      var works;
+
+      spyOn(Requestr.localDb, 'close').andCallFake(function() {
+        works = true;
+      });
+
+      Requestr.localDb.close = null;
+      Requestr.closeLocalDb();
+
+      expect(works).toBe(undefined);
+    });
+
   });
 
   describe('Requestr.cache.update', function() {
@@ -425,6 +466,7 @@ describe('Requestr', function() {
       Requestr.localDb = null;
       Requestr.browser.isSafari = false;
       Requestr.localDbPolyfill = null;
+      window.indexedDB = null;
     });
 
     it('should be defined', function() {
@@ -432,9 +474,15 @@ describe('Requestr', function() {
     });
 
     it('should be add resources via IndexedDb', function() {
+      spyOn(Requestr, 'openLocalDb').andCallFake(function(db, cb) {
+        cb(true);
+      });
+
       var resources = [1, 2, 3];
       Requestr.localDb = {};
       spyOn(Requestr.cache, 'add');
+
+      window.indexedDB = {};
 
       Requestr.cache.update(resources);
 
@@ -653,6 +701,7 @@ describe('Requestr', function() {
       Requestr.localDbPolyfill = null;
       Requestr.browser.isSafari = false;
       Requestr.localDb = null;
+      window.indexedDB = null;
     });
 
     it('should be defined', function() {
@@ -660,27 +709,41 @@ describe('Requestr', function() {
     });
 
     it('should read resource from cache', function() {
+      spyOn(Requestr, 'openLocalDb').andCallFake(function(db, cb) {
+        cb(true);
+      });
+
       var requests, result;
 
       request = {};
 
       requests = [{Url: 'http://tradeshift.com'}];
 
+      window.indexedDB = {};
+
       Requestr.cache.read(requests, function(r) {result = r;});
+
       request.onsuccess({target: {result: {}}});
 
       expect(result.length).toBe(1);
+
     });
 
     it('should not read resource from cache', function() {
+      spyOn(Requestr, 'openLocalDb').andCallFake(function(db, cb) {
+        cb(true);
+      });
+
       var requests, result;
 
       request = {};
 
       requests = [{Url: 'http://tradeshift.com'}];
 
+      window.indexedDB = {};
+
       Requestr.cache.read(requests, function(r) {result = r;});
-      request.onerror(null);
+      request.onerror(true);
 
       expect(result.length).toBe(0);
     });
@@ -706,6 +769,10 @@ describe('Requestr', function() {
     });
 
     it('should clear indexeddb cache', function() {
+      spyOn(Requestr, 'openLocalDb').andCallFake(function(db, cb) {
+        cb(true);
+      });
+
       Requestr.localDb = {};
       window.indexedDB = {deleteDatabase: function() {}};
 
