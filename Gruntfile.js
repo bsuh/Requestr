@@ -22,14 +22,14 @@ module.exports = function(grunt) {
           stdout: true
         },
         // Closure tools styling.
-        command: 'fixjsstyle lib/requestr.js specs/requestr_test.js'
+        command: 'fixjsstyle --strict lib/requestr.js specs/requestr_test.js'
       },
       gjslint: {
         options: {
           stdout: true
         },
         // Closure tools linting.
-        command: 'gjslint lib/requestr.js specs/requestr_test.js'
+        command: 'gjslint --strict lib/requestr.js specs/requestr_test.js'
       }
     },
     

@@ -46,49 +46,49 @@ describe('Requestr', function() {
 
     expect(Requestr.customEvents).toBeDefined();
     expect(Requestr.customEvents.REQUESTR_READY).toBe(
-      'requestrReady');
+        'requestrReady');
     expect(Requestr.customEvents.REQUESTR_ERROR).toBe(
-      'requestrError');
+        'requestrError');
     expect(Requestr.customEvents.DOCUMENT_LOAD_START).toBe(
-      'documentLoadStart');
+        'documentLoadStart');
     expect(Requestr.customEvents.DOCUMENT_LOAD_PROGRESS).toBe(
-      'documentLoadProgress');
+        'documentLoadProgress');
     expect(Requestr.customEvents.DOCUMENT_LOAD_ERROR).toBe(
-      'documentLoadError');
+        'documentLoadError');
     expect(Requestr.customEvents.DOCUMENT_LOAD_COMPLETE).toBe(
-      'documentLoadComplete');
+        'documentLoadComplete');
     expect(Requestr.customEvents.DOCUMENT_RENDERED).toBe(
-      'documentRendered');
+        'documentRendered');
     expect(Requestr.customEvents.DOCUMENT_BLOB_URL_CREATED).toBe(
-      'documentBlobUrlCreated');
+        'documentBlobUrlCreated');
     expect(Requestr.customEvents.RESOURCE_API_ERROR).toBe(
-      'resourceApiError');
+        'resourceApiError');
     expect(Requestr.customEvents.RESOURCE_LOAD_START).toBe(
-      'resourceLoadStart');
+        'resourceLoadStart');
     expect(Requestr.customEvents.RESOURCE_LOAD_PROGRESS).toBe(
-      'resourceLoadProgress');
+        'resourceLoadProgress');
     expect(Requestr.customEvents.RESOURCE_LOAD_ERROR).toBe(
-      'resourceLoadError');
+        'resourceLoadError');
     expect(Requestr.customEvents.RESOURCE_LOAD_COMPLETE).toBe(
-      'resourceLoadComplete');
+        'resourceLoadComplete');
     expect(Requestr.customEvents.RESOURCE_RESOLVING).toBe(
-      'resourceResolving');
+        'resourceResolving');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_START).toBe(
-      'externalCssLoadStart');
+        'externalCssLoadStart');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE).toBe(
-      'externalCssLoadComplete');
+        'externalCssLoadComplete');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS).toBe(
-      'externalCssLoadProgress');
+        'externalCssLoadProgress');
     expect(Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR).toBe(
-      'externalCssLoadError');
+        'externalCssLoadError');
 
     expect(Requestr.customErrors).toBeDefined();
     expect(Requestr.customErrors.CACHING).toBe(
-      'caching');
+        'caching');
     expect(Requestr.customErrors.SERIALIZATION).toBe(
-      'serialization');
+        'serialization');
     expect(Requestr.customErrors.SERVICE).toBe(
-      'service');
+        'service');
 
     expect(Requestr.CACHING_DB_NAME).toBe('Requestr');
     expect(Requestr.CACHING_DB_STORE_NAME).toBe('datauris');
@@ -150,8 +150,8 @@ describe('Requestr', function() {
       Requestr.dispatchError(type, message, details);
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-        Requestr.customEvents.REQUESTR_ERROR,
-        {type: type, message: message, details: details}
+          Requestr.customEvents.REQUESTR_ERROR,
+          {type: type, message: message, details: details}
       );
     });
   });
@@ -202,7 +202,7 @@ describe('Requestr', function() {
       spyOn(window, 'dispatchEvent');
 
       Requestr.parseSerialization({textContent:
-          '{"expires": "Mon, 10 Mar 2014 20:00:00 GMT"}'});
+            '{"expires": "Mon, 10 Mar 2014 20:00:00 GMT"}'});
 
       expect(Requestr.serialization.expires).toBe(
           'Mon, 10 Mar 2014 20:00:00 GMT');
@@ -239,8 +239,8 @@ describe('Requestr', function() {
       Requestr.parseSerialization({textContent: '{"bad": "error"}'});
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.SERIALIZATION,
-        jasmine.any(String)
+          Requestr.customErrors.SERIALIZATION,
+          jasmine.any(String)
       );
       expect(Requestr.loadPage).not.toHaveBeenCalled();
     });
@@ -252,8 +252,8 @@ describe('Requestr', function() {
       Requestr.parseSerialization(null);
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.SERIALIZATION,
-        jasmine.any(String)
+          Requestr.customErrors.SERIALIZATION,
+          jasmine.any(String)
       );
       expect(Requestr.loadPage).not.toHaveBeenCalled();
     });
@@ -265,8 +265,8 @@ describe('Requestr', function() {
       Requestr.parseSerialization({textContent: '{"bad: "error"}'});
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.SERIALIZATION,
-        jasmine.any(String)
+          Requestr.customErrors.SERIALIZATION,
+          jasmine.any(String)
       );
       expect(Requestr.loadPage).not.toHaveBeenCalled();
     });
@@ -325,9 +325,9 @@ describe('Requestr', function() {
 
       expect(Requestr.localDb).toBe(null);
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.CACHING,
-        jasmine.any(String),
-        undefined
+          Requestr.customErrors.CACHING,
+          jasmine.any(String),
+          undefined
       );
     });
 
@@ -409,8 +409,8 @@ describe('Requestr', function() {
       Requestr.openLocalDb(1, function() {});
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.CACHING,
-        jasmine.any(String)
+          Requestr.customErrors.CACHING,
+          jasmine.any(String)
       );
     });
   });
@@ -590,12 +590,12 @@ describe('Requestr', function() {
       };
 
       Requestr.cache.add(resources,
-      function() {
-        success = true;
-      },
-      function(e) {
-        error = true;
-      });
+          function() {
+            success = true;
+          },
+          function(e) {
+            error = true;
+          });
 
       request.onsuccess({target: {result: 'xxx'}});
       transaction.oncomplete();
@@ -606,47 +606,47 @@ describe('Requestr', function() {
 
     it('should not add resources to cache (indexeddb) due to error',
         function() {
-      var errorObj = {message: 'xxx'};
+         var errorObj = {message: 'xxx'};
 
-      spyOn(Requestr, 'dispatchError');
+         spyOn(Requestr, 'dispatchError');
 
-      resources = [{
-        url: 'http://tradeshift.com',
-        token: '',
-        mimeType: '',
-        dataType: '',
-        data: '',
-        date: ''
-      }];
+         resources = [{
+           url: 'http://tradeshift.com',
+           token: '',
+           mimeType: '',
+           dataType: '',
+           data: '',
+           date: ''
+         }];
 
-      Requestr.localDb.transaction = function(p1, p2) {
-        return transaction = {
-          objectStore: function(p) {
-            return {put: function(pp) {
-              return request = {};
-            }};
-          }
-        };
-      };
+         Requestr.localDb.transaction = function(p1, p2) {
+           return transaction = {
+             objectStore: function(p) {
+               return {put: function(pp) {
+                 return request = {};
+               }};
+             }
+           };
+         };
 
-      Requestr.cache.add(resources,
-      function() {
-        success = true;
-      },
-      function(e) {
-        error = true;
-      });
+         Requestr.cache.add(resources,
+         function() {
+           success = true;
+         },
+         function(e) {
+           error = true;
+         });
 
-      request.onerror({target: {error: errorObj}});
-      transaction.onerror();
-      expect(success).toBe(null);
-      expect(error).toBe(true);
-      expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.CACHING,
-        jasmine.any(String),
-        errorObj
-      );
-    });
+         request.onerror({target: {error: errorObj}});
+         transaction.onerror();
+         expect(success).toBe(null);
+         expect(error).toBe(true);
+         expect(Requestr.dispatchError).toHaveBeenCalledWith(
+         Requestr.customErrors.CACHING,
+         jasmine.any(String),
+         errorObj
+         );
+       });
   });
 
   describe('Requestr.cache.pollyfill.websql.read', function() {
@@ -689,8 +689,8 @@ describe('Requestr', function() {
       Requestr.localDb = {
         transaction: function() {
           return {objectStore: function() {
-              return {get: function(url) {return request;}};
-            }
+            return {get: function(url) {return request;}};
+          }
           };
         },
         objectStoreNames: {length: 1}
@@ -811,10 +811,10 @@ describe('Requestr', function() {
       Requestr.loadFragment(source, html, function(r) {result = r;});
 
       expect(Requestr.parsePage).toHaveBeenCalledWith({
-          originUrl: source,
-          target: jasmine.any(Object)
-        },
-        jasmine.any(Function), null, null, true);
+        originUrl: source,
+        target: jasmine.any(Object)
+      },
+      jasmine.any(Function), null, null, true);
       expect(typeof result).toBe('string');
       expect(result).toBe('<p>tradeshift</p>');
     });
@@ -847,16 +847,16 @@ describe('Requestr', function() {
           Requestr.customEvents.DOCUMENT_LOAD_START);
       expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
           Requestr.service,
-        [{
-          Url: url,
-          Document: true,
-          Token: null,
-          Type: 'STRING'
-        }],
-        jasmine.any(Object),
-        null,
-        Requestr.cache.expires,
-        2000000
+          [{
+            Url: url,
+            Document: true,
+            Token: null,
+            Type: 'STRING'
+          }],
+          jasmine.any(Object),
+          null,
+          Requestr.cache.expires,
+          2000000
       );
     });
 
@@ -879,16 +879,16 @@ describe('Requestr', function() {
           Requestr.customEvents.DOCUMENT_LOAD_START);
       expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
           Requestr.service,
-        [{
-          Url: url,
-          Document: true,
-          Token: null,
-          Type: 'STRING'
-        }],
-        jasmine.any(Object),
-        null,
-        Requestr.cache.expires,
-        2000000
+          [{
+            Url: url,
+            Document: true,
+            Token: null,
+            Type: 'STRING'
+          }],
+          jasmine.any(Object),
+          null,
+          Requestr.cache.expires,
+          2000000
       );
     });
 
@@ -901,8 +901,8 @@ describe('Requestr', function() {
       Requestr.loadPage('some.html');
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.SERVICE,
-        jasmine.any(String)
+          Requestr.customErrors.SERVICE,
+          jasmine.any(String)
       );
 
       Requestr.service = noService;
@@ -922,11 +922,11 @@ describe('Requestr', function() {
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
           Requestr.customEvents.DOCUMENT_LOAD_PROGRESS, {
-          progress:
+            progress:
                 Math.round(progress.loaded / progress.totalSize * 100),
-          bytes: 50,
-          total: 100
-        }
+            bytes: 50,
+            total: 100
+          }
       );
     });
   });
@@ -998,7 +998,7 @@ describe('Requestr', function() {
       // TODO (jam@): Add checks to make sure Requestr
       // elements are removed.
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-      Requestr.customEvents.RESOURCE_LOAD_START);
+          Requestr.customEvents.RESOURCE_LOAD_START);
       // TODO (jam@): Add checks to ensure the XHR is made with
       // the proper data.
       expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
@@ -1013,8 +1013,8 @@ describe('Requestr', function() {
       Requestr.parsePage({});
 
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.SERVICE,
-        jasmine.any(String)
+          Requestr.customErrors.SERVICE,
+          jasmine.any(String)
       );
 
       Requestr.service = noService;
@@ -1096,7 +1096,7 @@ describe('Requestr', function() {
 
     it('should parse rules and return valid string', function() {
       var test = Requestr.getParsedCssFromRules([{cssText: 'test'},
-          {cssText: ' testing'}]);
+            {cssText: ' testing'}]);
 
       expect(typeof test).toBe('string');
       expect(test).toBe('test testing');
@@ -1147,25 +1147,25 @@ describe('Requestr', function() {
 
     it('should not do any resolving since no resources returned from ' +
         'service', function() {
-      spyOn(Requestr, 'dispatchCustomEvent');
-      spyOn(Requestr, 'dataURItoBlob');
-      spyOn(Requestr, 'setDocumentHtml');
-      spyOn(Requestr, 'createDocumentBlobUrl');
-      spyOn(Requestr, 'removeResponseLoadXhrListener');
+         spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'dataURItoBlob');
+         spyOn(Requestr, 'setDocumentHtml');
+         spyOn(Requestr, 'createDocumentBlobUrl');
+         spyOn(Requestr, 'removeResponseLoadXhrListener');
 
-      Requestr.xhr = {};
-      Requestr.handleResponseResources({target: {response: {}}});
+         Requestr.xhr = {};
+         Requestr.handleResponseResources({target: {response: {}}});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.RESOURCE_LOAD_COMPLETE);
-      expect(Requestr.removeResponseLoadXhrListener).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.RESOURCE_API_ERROR);
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.RESOURCE_RESOLVING);
-      expect(Requestr.dataURItoBlob).not.toHaveBeenCalled();
-      expect(Requestr.setDocumentHtml).toHaveBeenCalled();
-    });
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.RESOURCE_LOAD_COMPLETE);
+         expect(Requestr.removeResponseLoadXhrListener).toHaveBeenCalled();
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.RESOURCE_API_ERROR);
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.RESOURCE_RESOLVING);
+         expect(Requestr.dataURItoBlob).not.toHaveBeenCalled();
+         expect(Requestr.setDocumentHtml).toHaveBeenCalled();
+       });
 
     // TODO (jam@): Add test for error.
   });
@@ -1183,7 +1183,7 @@ describe('Requestr', function() {
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
           Requestr.customEvents.RESOURCE_LOAD_PROGRESS,
-              {bytes: Math.round(progress.loaded)});
+          {bytes: Math.round(progress.loaded)});
     });
   });
 
@@ -1261,28 +1261,28 @@ describe('Requestr', function() {
 
     it('should resolve document with no additional urls to parse',
         function() {
-      spyOn(Requestr, 'resolveDocumentCssUrls');
-      spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'resolveDocumentCssUrls');
+         spyOn(Requestr, 'dispatchCustomEvent');
 
-      Requestr.loadExternalCssUrls([], [], null, {}, []);
+         Requestr.loadExternalCssUrls([], [], null, {}, []);
 
-      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).not.toHaveBeenCalledWith(
-          Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
-    });
+         expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+         expect(Requestr.dispatchCustomEvent).not.toHaveBeenCalledWith(
+         Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+       });
 
     it('should parse additional urls before resolving document',
         function() {
-      spyOn(Requestr, 'requestDataUriFromService');
-      spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'requestDataUriFromService');
+         spyOn(Requestr, 'dispatchCustomEvent');
 
-      Requestr.loadExternalCssUrls(
-          ['http://tradeshift.com'], [], null, {}, []);
+         Requestr.loadExternalCssUrls(
+         ['http://tradeshift.com'], [], null, {}, []);
 
-      expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
-    });
+         expect(Requestr.requestDataUriFromService).toHaveBeenCalled();
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.EXTERNAL_CSS_LOAD_START);
+       });
   });
 
   describe('Requestr.handleExternalCssResourcesProgress', function() {
@@ -1296,8 +1296,8 @@ describe('Requestr', function() {
       Requestr.handleExternalCssResourcesProgress({loaded: 24.6});
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-        Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS,
-        {bytes: 25}
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_PROGRESS,
+          {bytes: 25}
       );
     });
   });
@@ -1313,8 +1313,8 @@ describe('Requestr', function() {
       Requestr.handleExternalCssResourcesError('error');
 
       expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-        Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR,
-        {error: 'error'}
+          Requestr.customEvents.EXTERNAL_CSS_LOAD_ERROR,
+          {error: 'error'}
       );
     });
   });
@@ -1326,32 +1326,32 @@ describe('Requestr', function() {
 
     it('should attempt to resolve document with no additional ' +
         'external css to parse', function() {
-      spyOn(Requestr, 'dispatchCustomEvent');
-      spyOn(Requestr, 'resolveDocumentCssUrls');
+         spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'resolveDocumentCssUrls');
 
-      Requestr.handleDocumentCssUris(
-          {target: {response: {}}}, [], {}, [], function() {});
+         Requestr.handleDocumentCssUris(
+         {target: {response: {}}}, [], {}, [], function() {});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
-      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
-    });
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+         expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+       });
 
     it('should attempt to resolve document with no additional urls in ' +
         'external css to parse', function() {
-      spyOn(Requestr, 'dispatchCustomEvent');
-      spyOn(Requestr, 'resolveDocumentCssUrls');
-      spyOn(Requestr, 'createUrlFromResource');
+         spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'resolveDocumentCssUrls');
+         spyOn(Requestr, 'createUrlFromResource');
 
-      Requestr.handleDocumentCssUris(
-          {target: {response: {Resources: [{Url:
-              'http://tradeshift.com'}]}}}, [], {}, [], function() {});
+         Requestr.handleDocumentCssUris(
+         {target: {response: {Resources: [{Url:
+           'http://tradeshift.com'}]}}}, [], {}, [], function() {});
 
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
-      expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
-      expect(Requestr.createUrlFromResource).toHaveBeenCalled();
-    });
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.EXTERNAL_CSS_LOAD_COMPLETE);
+         expect(Requestr.resolveDocumentCssUrls).toHaveBeenCalled();
+         expect(Requestr.createUrlFromResource).toHaveBeenCalled();
+       });
   });
 
   describe('Requestr.resolveDocumentCssUrls', function() {
@@ -1486,8 +1486,8 @@ describe('Requestr', function() {
 
       expect(test).toBe('http://tradeshift.com');
       expect(Requestr.dispatchError).toHaveBeenCalledWith(
-        Requestr.customErrors.CACHING,
-        jasmine.any(String)
+          Requestr.customErrors.CACHING,
+          jasmine.any(String)
       );
     });
   });
@@ -1514,7 +1514,7 @@ describe('Requestr', function() {
     it('should replace url in style element', function() {
       var dimp = window.document.implementation.createHTMLDocument(''),
           css = {innerText:
-          'rule {background: url(http://tradeshift.com/img.png)}'};
+                'rule {background: url(http://tradeshift.com/img.png)}'};
 
       spyOn(Requestr, 'createUrlFromResource').andReturn('blob://url');
 
@@ -1557,7 +1557,7 @@ describe('Requestr', function() {
       var test = Requestr.dataStringToBlob('data', 'mime');
 
       expect(Requestr.dataURItoBlob).toHaveBeenCalledWith(
-      'data:mime;base64,ZGF0YQ==', 'mime');
+          'data:mime;base64,ZGF0YQ==', 'mime');
     });
   });
 
@@ -1666,15 +1666,15 @@ describe('Requestr', function() {
 
     it('should wait for document loaded before parsing serialization',
         function() {
-      spyOn(Requestr, 'parseSerialization');
-      spyOn(window, 'addEventListener');
+         spyOn(Requestr, 'parseSerialization');
+         spyOn(window, 'addEventListener');
 
-      Requestr.init();
+         Requestr.init();
 
-      expect(window.addEventListener).toHaveBeenCalledWith(
-          'DOMContentLoaded', jasmine.any(Function));
-      expect(Requestr.parseSerialization).not.toHaveBeenCalled();
-    });
+         expect(window.addEventListener).toHaveBeenCalledWith(
+         'DOMContentLoaded', jasmine.any(Function));
+         expect(Requestr.parseSerialization).not.toHaveBeenCalled();
+       });
   });
 
 });
