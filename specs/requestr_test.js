@@ -860,40 +860,47 @@ describe('Requestr', function() {
       );
     });
 
-    it('should make xhr to load page with callback', function() {
-      spyOn(Requestr, 'stopWindow');
-      spyOn(Requestr, 'dispatchCustomEvent');
-      spyOn(Requestr, 'requestDataUriFromService');
+    it('should make xhr to load page with callback using service API',
+        function() {
+         spyOn(Requestr, 'stopWindow');
+         spyOn(Requestr, 'dispatchCustomEvent');
+         spyOn(Requestr, 'requestDataUriFromService');
+         spyOn(XMLHttpRequest.prototype, 'open');
+         spyOn(XMLHttpRequest.prototype, 'send');
 
-      var someCallBack = function myFancyFunction() {};
-      Requestr.loadPage('some.html', someCallBack);
+         var someCallBack = function myFancyFunction() {};
+         Requestr.loadPage('some.html', someCallBack);
 
-      var url = document.createElement('a');
-      url.setAttribute('href', 'some.html');
-      url = url.href;
+         var url = document.createElement('a');
+         url.setAttribute('href', 'some.html');
+         url = url.href;
 
-      expect(document.documentElement.classList.contains(
-          Requestr.LOADING_CLASS)).toBe(true);
-      expect(Requestr.stopWindow).not.toHaveBeenCalled();
-      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
-          Requestr.customEvents.DOCUMENT_LOAD_START);
-      expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
-          Requestr.service,
-          [{
+         expect(document.documentElement.classList.contains(
+         Requestr.LOADING_CLASS)).toBe(true);
+         expect(Requestr.stopWindow).not.toHaveBeenCalled();
+         expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+         Requestr.customEvents.DOCUMENT_LOAD_START);
+         expect(Requestr.requestDataUriFromService).toHaveBeenCalledWith(
+         Requestr.service,
+         [{
             Url: url,
             Document: true,
             Token: null,
             Type: 'STRING'
           }],
-          jasmine.any(Object),
-          null,
-          Requestr.cache.expires,
-          2000000
-      );
-    });
+         jasmine.any(Object),
+         null,
+         Requestr.cache.expires,
+         2000000
+         );
+         expect(XMLHttpRequest.prototype.open).not.toHaveBeenCalled();
+         expect(XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
+       });
 
     it('should encounter error loading page', function() {
       spyOn(Requestr, 'dispatchError');
+      spyOn(XMLHttpRequest.prototype, 'open');
+      spyOn(XMLHttpRequest.prototype, 'send');
 
       var noService = Requestr.service;
       Requestr.service = null;
@@ -904,8 +911,83 @@ describe('Requestr', function() {
           Requestr.customErrors.SERVICE,
           jasmine.any(String)
       );
+      expect(XMLHttpRequest.prototype.open).not.toHaveBeenCalled();
+      expect(XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
 
       Requestr.service = noService;
+    });
+
+    it('should try to load page directly from host', function() {
+      spyOn(Requestr, 'stopWindow');
+      spyOn(Requestr, 'dispatchCustomEvent');
+      spyOn(Requestr, 'requestDataUriFromService');
+      spyOn(XMLHttpRequest.prototype, 'open');
+      spyOn(XMLHttpRequest.prototype, 'send');
+
+      var someCallBack = function myFancyFunction() {};
+      Requestr.loadPage('some.html', someCallBack, null, null, true);
+
+      var url = document.createElement('a');
+      url.setAttribute('href', 'some.html');
+      url = url.href;
+
+      expect(document.documentElement.classList.contains(
+          Requestr.LOADING_CLASS)).toBe(true);
+      expect(Requestr.stopWindow).not.toHaveBeenCalled();
+      expect(Requestr.dispatchCustomEvent).toHaveBeenCalledWith(
+          Requestr.customEvents.DOCUMENT_LOAD_START);
+      expect(Requestr.requestDataUriFromService).not.toHaveBeenCalled();
+      expect(XMLHttpRequest.prototype.open).toHaveBeenCalledWith(
+          'GET', jasmine.any(String), true);
+      expect(XMLHttpRequest.prototype.send).toHaveBeenCalled();
+    });
+  });
+
+  describe('Requestr.handleLoadPage', function() {
+    it('should be defined', function() {
+      expect(Requestr.handleLoadPage).toBeDefined();
+    });
+
+    // TODO (jam@): Improve test to check actual response.
+    it('should handle page load response ', function() {
+      spyOn(Requestr, 'parsePage');
+
+      var url = 'http://tradeshift.com/test.html';
+
+      Requestr.handleLoadPage({
+        target: {
+          response: {
+            Resources: [{
+              Url: url,
+              Data: '<!DOCTYPE html><html><body>Hello World!</body></html>',
+              Token: null,
+              Type: 'STRING',
+              ContentType: 'text/html'
+            }]
+          }
+        }
+      }, url);
+
+      expect(Requestr.parsePage).toHaveBeenCalledWith(
+          {
+            originUrl: url,
+            target: jasmine.any(Object)
+          }, undefined, undefined, undefined
+      );
+    });
+
+    it('should fail to handle page load response ', function() {
+      spyOn(Requestr, 'parsePage');
+      spyOn(Requestr, 'dispatchError');
+
+      var test = 'test', callback = function(r) {test = r;};
+
+      Requestr.handleLoadPage({target: {response: 'JUNK'}},
+          'http://tradeshift.com/test.html', callback);
+
+      expect(Requestr.dispatchError).toHaveBeenCalled();
+      expect(Requestr.parsePage).not.toHaveBeenCalled();
+      expect(test).toBe(null);
     });
   });
 
