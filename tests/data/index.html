@@ -15,6 +15,14 @@
           background-repeat: no-repeat;
         }
     </style>
+    <script type="text/javascript">
+      console.timeline('Frame');
+      console.profile('Frame');
+      window.addEventListener('load', function () {
+        console.timelineEnd('Frame');
+        console.profileEnd('Frame');
+      }, false);
+    </script>
     <link href="css/style.css" rel="stylesheet" />
   </head>
   <body>

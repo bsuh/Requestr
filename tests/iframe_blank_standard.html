@@ -5,6 +5,8 @@
     <script type="text/javascript">
       var start, managerLoaded;
       if (window.performance && window.performance.now) {
+        console.timeline('Parent');
+        console.profile('Parent');
         start = window.performance.now();
       }
       window.addEventListener('load', function () {
@@ -16,6 +18,8 @@
         frame.addEventListener('load', function () {
           if (window.performance && window.performance.now) {
             console.log('iFrame App loaded in: ' + ((window.performance.now() - managerLoaded)/1000) + ' seconds');
+            console.timelineEnd('Parent');
+            console.profileEnd('Parent');
           }
           document.documentElement.classList.remove('requestr');
         }, false);
