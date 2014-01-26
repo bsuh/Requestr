@@ -834,11 +834,9 @@ describe('Requestr', function() {
       spyOn(Requestr, 'dispatchCustomEvent');
       spyOn(Requestr, 'requestDataUriFromService');
 
-      Requestr.loadPage('some.html');
+      var url = 'http://tradeshift.com/some.html';
 
-      var url = document.createElement('a');
-      url.setAttribute('href', 'some.html');
-      url = url.href;
+      Requestr.loadPage(url);
 
       expect(document.documentElement.classList.contains(
           Requestr.LOADING_CLASS)).toBe(true);
@@ -868,12 +866,9 @@ describe('Requestr', function() {
          spyOn(XMLHttpRequest.prototype, 'open');
          spyOn(XMLHttpRequest.prototype, 'send');
 
-         var someCallBack = function myFancyFunction() {};
-         Requestr.loadPage('some.html', someCallBack);
-
-         var url = document.createElement('a');
-         url.setAttribute('href', 'some.html');
-         url = url.href;
+         var url = 'http://tradeshift.com/some.html',
+         someCallBack = function myFancyFunction() {};
+         Requestr.loadPage(url, someCallBack);
 
          expect(document.documentElement.classList.contains(
          Requestr.LOADING_CLASS)).toBe(true);
@@ -941,6 +936,7 @@ describe('Requestr', function() {
           'GET', jasmine.any(String), true);
       expect(XMLHttpRequest.prototype.send).toHaveBeenCalled();
     });
+
   });
 
   describe('Requestr.handleLoadPage', function() {
