@@ -16,11 +16,15 @@
         }
     </style>
     <script type="text/javascript">
-      console.timeline('Frame');
-      console.profile('Frame');
+      if (console.timeline && console.profile) {
+        console.timeline('Frame');
+        console.profile('Frame');
+      }
       window.addEventListener('load', function () {
-        console.timelineEnd('Frame');
-        console.profileEnd('Frame');
+        if (console.timeline && console.profile) {
+          console.timelineEnd('Frame');
+          console.profileEnd('Frame');
+        }
       }, false);
     </script>
     <link href="css/style.css" rel="stylesheet" />

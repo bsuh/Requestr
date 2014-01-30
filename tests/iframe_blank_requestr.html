@@ -6,8 +6,10 @@
         var start, managerLoaded;
         // Used to test loading time performance, not supported by all browsers.
         if (window.performance && window.performance.now) {
-          console.timeline('Parent');
-          console.profile('Parent');
+          if (console.timeline && console.profile) {
+            console.timeline('Parent');
+            console.profile('Parent');
+          }
           start = window.performance.now();
         }
         // Loads the document after Requestr is ready.
@@ -29,8 +31,10 @@
             //
             appFrame.addEventListener('load', function () {
               console.log('iFrame document loaded in: ' + ((window.performance.now() - managerLoaded)/1000) + ' seconds');
-              console.timelineEnd('Parent');
-              console.profileEnd('Parent');
+              if (console.timeline && console.profile) {
+                console.timelineEnd('Parent');
+                console.profileEnd('Parent');
+              }
             }, false);
           }
           // Handling Requestr events for loading UI.
