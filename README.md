@@ -3,7 +3,13 @@ Requestr
 
 Requestr wants to fix the latency issue created by the waterfall approach of loading assets by browsers. In order to do this, Requestr will look at executing JavaScript at runtime and use a server-side API to combine all the network requests into a single request. Combining the multiple network requests into a single requests will drastically speed up the time it takes to load all the assets by eliminating the latency added as the requests are made in the grouped waterfall currently implemented by the browsers.
 
-The benefit of combining the network requests is that the browser is only attempting to fetch a single request, which cuts down the latency of the waterfall, while also moving the network request to a single thread, which speeds up the available computing power available to the window while loading these network requests.
+The benefit of combining the network requests is that the browser is only attempting to fetch a single request, which cuts down the latency of the waterfall, while also moving the network request to a single thread, which speeds up the available computing power available to the window while loading these network requests. Additionally, Requestr optimizes the document paint/render cycle, which futher reduces the processing power used to render a document.
+
+####Page loaded without Requestr
+![Page loaded without Requestr](http://drive.google.com/uc?export=view&id=0B5D-rzbtF3GHVHlKSzA4ZVdLcjQ "Page loaded without Requestr")
+
+####Page loaded with Requestr
+![Page loaded without Requestr](http://drive.google.com/uc?export=view&id=0B5D-rzbtF3GHa3JScUJlSVBmSG8 "Page loaded without Requestr")
 
 
 Under the Hood
@@ -13,11 +19,59 @@ In order to achieve this ambitious goal, Requestr uses a mix of Frontend and Bac
 
 Once the Backend API returns the JSON data, the Frontend library converts the data URI and string data into in-memory requests that the browser can redirect the original network request to, essentially removing the need to make an actual network request, and instead loading the request from the browser's memory.
 
+The following is the original [design document](https://docs.google.com/a/tradeshift.com/document/d/12K7GVr9Fdy2AsvCpLe35fkkgTpjB_SYVlbIbtem3STs) for Requestr, feel free to comment and contribute.
+
 
 Using Requestr
 --------------
 
-Details
+In order to get started, you will need to know that currently there is a **dependency on the Request API** [repository](https://github.com/Tradeshift/RequestrAPI) and the service it provides. So you will need to checkout that repository before getting started. Once checked out, you will need to get the service running. Getting the service running is as simple as running `npm install` and then `grunt`. This will start the Requestr API at `http://localhost:3000/asset`, please make a note of that for later reference.
+
+Now the fun part, the following are examples on how to get documents to load with Requestr, please keep in mind that you will need to serve the page over HTTP/HTTPs when testing as the library relies on XHRs that would not work when served over the file protocol. The `service` property is always required in the serialization, as of now, because of the dependency on the Requestr API. The `service` property is the location of the Requestr API.
+
+####Preloader
+The following example loads the page defined in the `owner` property of the serialization element into the document. This is how a preloader would work, as the original document is displayed until the `owner` document is loaded and then replaces it. The `maxFileSize` property specifies the maximum file size of each resource to load via the Requestr API in bytes. The `expires` property specifies how long the cache is valid.
+ ```html
+<script type="text/requestr-serialization">
+  {
+    "owner": "data/index.html",
+    "service": "http://localhost:3000/asset",
+    "maxFileSize": 200000,
+    "expires": "Mon, 10 Mar 2014 20:00:00 GMT"
+  }
+</script>
+<script type="text/javascript">
+// Include the minified Requestr library inline, this is to avoid making another network request!
+</script>
+ ```
+
+####iFrame
+In this example, Requestr fetches a page then returns a parsed blob URL which is used to then load in an iFrame. In short, Requestr is given a page, which it then fetches and resolves all network requests. Upon parsing and combining all network requests, it returns a blob URL with all URLs resolved and placed in the browser's memory, which ultimately optimizes the document paint/render cycle, asides cutting down the network latency.
+```html
+<script type="text/javascript">
+  // Loads the document after Requestr is ready.
+  window.addEventListener('requestrReady', function() {
+    // Setting the source of the iFrame after parsed by Requestr.
+    function handlePageBlobUrl (result) {
+      var appFrame = document.getElementById('app');
+      // Loading page fetched by Requestr into iFrame.
+      appFrame.src = result.url;
+    }
+    // Loading the document, can do cross-domain as well.
+    Requestr.loadPage('/tests/data/index.html', handlePageBlobUrl);
+  }, false);
+</script>
+<script type="text/javascript">
+// Include the minified Requestr library inline, this is to avoid making another network request!
+</script>
+<script type="text/requestr-serialization">
+  {
+    "service": "http://localhost:3000/asset",
+    "maxFileSize": 200000
+  }
+</script>
+```
+Additional examples can be found in the `tests` directory, and more are to come, please be patient!
 
 
 Development Environment
@@ -37,6 +91,9 @@ Once `Grunt` and the `Closure Linter` are installed:
 That's it, you will have the entire project built and ready for local development.
 
 Requestr uses a `pre-commit` hook that runs the `default` task. This means that in order to commit your changes must pass both jasmine tests and jshint.
+
+For the **Requestr API**, please refer to the documentation in its respective repository:
+[https://github.com/Tradeshift/RequestrAPI](https://github.com/Tradeshift/RequestrAPI)
 
 
 Supported Browsers
