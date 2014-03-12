@@ -1,5 +1,4 @@
-Requestr
-========
+#Requestr
 
 Requestr wants to fix the latency issue created by the waterfall approach of loading assets by browsers. In order to do this, Requestr will look at executing JavaScript at runtime and use a server-side API to combine all the network requests into a single request. Combining the multiple network requests into a single requests will drastically speed up the time it takes to load all the assets by eliminating the latency added as the requests are made in the grouped waterfall currently implemented by the browsers.
 
@@ -12,8 +11,7 @@ The benefit of combining the network requests is that the browser is only attemp
 ![Page loaded without Requestr](http://drive.google.com/uc?export=view&id=0B5D-rzbtF3GHa3JScUJlSVBmSG8 "Page loaded without Requestr")
 
 
-Under the Hood
---------------
+##Under the Hood
 
 In order to achieve this ambitious goal, Requestr uses a mix of Frontend and Backend APIs. On the Frontend, Requestr provides a single JavaScript library to be loaded by the window attempting to use it. This library will then use native browser provided APIs to parse the document for network request URLs, and aggregate all those requests to be fetched from the Backend API in a single network request. The Backend API will then get the aggregated network requests URLs and form a JSON structure that returns all the network requests as, for the moment, data URIs or strings. Alternatively, the JSON returned by the backend API could be manually created, removing the need for a Backend API.
 
@@ -22,8 +20,7 @@ Once the Backend API returns the JSON data, the Frontend library converts the da
 The following is the original [design document](https://docs.google.com/a/tradeshift.com/document/d/12K7GVr9Fdy2AsvCpLe35fkkgTpjB_SYVlbIbtem3STs) for Requestr, feel free to comment and contribute.
 
 
-Using Requestr
---------------
+##Using Requestr
 
 In order to get started, you will need to know that currently there is a **dependency on the Request API** [repository](https://github.com/Tradeshift/RequestrAPI) and the service it provides. So you will need to checkout that repository before getting started. Once checked out, you will need to get the service running. Getting the service running is as simple as running `npm install` and then `grunt`. This will start the Requestr API at `http://localhost:3000/asset`, please make a note of that for later reference.
 
@@ -73,9 +70,22 @@ In this example, Requestr fetches a page then returns a parsed blob URL which is
 ```
 Additional examples can be found in the `tests` directory, and more are to come, please be patient!
 
+####Serialization
+These are the currently implemented serialization properties by Requestr.
 
-Development Environment
------------------------
+| Property | Description | Required |
+| -------- | ----------- | -------- |
+| self | Interpreted by Requestr to mean that the current document should be parsed | No* |
+| owner | Used by Requestr to replace the currently loaded document while optimizing the requests before loading. This is considered more optimal since its cleaner and human readable | No* |
+| service | The URL for the Backend API used by Requestr | Yes |
+| maxFileSize | The maximum file size of network requests to be converted into data URIs, larger requests will remain traditional un-parsed network requests | No |
+| allow | Filter of allowed domains or URIs to be fetched by Requestr. Used in a matching index pattern | No |
+| exclude | Filter of domains or URIs to exclude when gather list of requests to fetch via Requestr. Used in a matching index pattern | No |
+| expires | Global time used a la “expired header” for all nested requests within the document | No |
+| development | Flag used to include debugging data when developing | No |
+*You will need one of `self` or `owner` when loading a document, unless you want to load fragments, for which neither is needed.
+
+##Development Environment
 
 If you would like to contribute or setup Requestr for local development, you will need to do the following:
 
@@ -96,8 +106,7 @@ For the **Requestr API**, please refer to the documentation in its respective re
 [https://github.com/Tradeshift/RequestrAPI](https://github.com/Tradeshift/RequestrAPI)
 
 
-Supported Browsers
-------------------
+##Supported Browsers
 
 Since Requestr is making use of a lot of modern browser APIs, particularly those of the HTML5 specification, there will be some limits as to which browsers Requestr will support at runtime.
 
@@ -111,8 +120,7 @@ It is the intent of Requestr to support the following browsers:
 More browsers will be added as tests are conducted and such browsers adopt and integrate the HTML5 specification. Alternatively, Requestr will look at using server-side helpers to make it possible to support legacy browsers in the future. Currently, Requestr has been tested on `Chrome`, `Firefox`, `Internet Explorer 10`, and `Safari`, and proven to perform as designed.
 
 
-Caveats
--------
+##Caveats
 
 Requestr is still in "alpha" mode, so there will with no doubt be many issues we will need to address before getting a much stable version. These are some of the currently known issues with Requestr:
 
@@ -122,13 +130,11 @@ Requestr is still in "alpha" mode, so there will with no doubt be many issues we
 If you encounter any issues, please report them here on Github, we will gladly take any feedback in an effort to improve Requestr. And as always, feel free to fork and send us a pull-request with any features, fixes, and/or improvements!
 
 
-License
--------
+##License
 
 Tradeshift provides its Requestr front-end application programming interface ("API") under a licensing model designed to meet the development and distribution needs of both commercial entities and open source projects. Entities who do not wish to distribute the source code for the Requestr front-end API under version 3 of the GNU General Public License (the "GPL") may enter into a commercial license agreement with Tradeshift. Please contact [jam@tradeshift.com](mailto:jam@tradeshift.com) for details. For developers of Free Open Source Software ("FOSS") applications under the GPL that want to combine and distribute those FOSS applications with the Requestr front-end API, Tradeshift’s open source software licensed under the GPL may be the best option.
 
 
-Credits
--------
+##Credits
 
 Requestr was developed at [Tradeshift](http://tradeshift.com) by José Antonio Márquez Russo ([@joseeight](https://twitter.com/joseeight)) with the help of Joakim Recht ([@joakimrecht](https://twitter.com/joakimrecht)), Joseph McCarthy ([@jmccarthy14](https://twitter.com/jmccarthy14)), and many other awesome [Tradeshifters](https://github.com/Tradeshift?tab=members).
