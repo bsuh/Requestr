@@ -25,10 +25,12 @@
   "bugs": {
     "url": "https://github.com/Tradeshift/Requestr/issues"
   },
-  "licenses": [{
-    "type": "GPLv3",
-    "url": "http://www.gnu.org/licenses/gpl-3.0.txt"
-  }],
+  "licenses": [
+    {
+      "type": "GPLv3",
+      "url": "http://www.gnu.org/licenses/gpl-3.0.txt"
+    }
+  ],
   "devDependencies": {
     "grunt": "~0.4.0",
     "grunt-contrib": "~0.7.0",
@@ -37,6 +39,7 @@
     "grunt-closure-tools": "~0.8.3",
     "grunt-shell": "~0.4.0",
     "grunt-contrib-uglify": "~0.2.4",
-    "grunt-githooks": "~0.3.0"
+    "grunt-githooks": "~0.3.0",
+    "grunt-selenium": "^0.5.10"
   }
 }
